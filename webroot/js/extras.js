@@ -89,21 +89,21 @@ var codeToCurrent = {
     1090: { iconFile: 'FrzRa', textModifier: 'Freezing Rain/ Windy' },
     1091: { iconFile: 'FrzRa', textModifier: 'Light Freezing Rain/ Windy' },
     1092: { iconFile: 'FrzRa', textModifier: 'Heavy Freezing Rain/ Windy' },
-    1100: { iconFile: 'LtRa', textModifier: 'Rain Shower' },
-    1101: { iconFile: 'LtRa', textModifier: 'Light Rain Shower' },
-    1102: { iconFile: 'Ra', textModifier: 'Heavy Rain Shower' },
-    1170: { iconFile: 'LtRa', textModifier: 'Rain Shower/ Windy/ Fog' },
-    1171: { iconFile: 'LtRa', textModifier: 'Light Rain Shower/ Windy' },
-    1172: { iconFile: 'WndRa', textModifier: 'Heavy Rain Shower/ Windy' },
-    1180: { iconFile: 'LtRa', textModifier: 'Rain Shower/ Fog' },
+    1100: { iconFile: 'LtRa', textModifier: 'Rain Shower', narration: '1100' },
+    1101: { iconFile: 'LtRa', textModifier: 'Light Rain Shower', narration: '1101' },
+    1102: { iconFile: 'Ra', textModifier: 'Heavy Rain Shower', narration: '1102' },
+    1170: { iconFile: 'LtRa', textModifier: 'Rain Shower/ Windy/ Fog', narration: '1100' },
+    1171: { iconFile: 'LtRa', textModifier: 'Light Rain Shower/ Windy', narration: '1101' },
+    1172: { iconFile: 'WndRa', textModifier: 'Heavy Rain Shower/ Windy', narration: '1102' },
+    1180: { iconFile: 'LtRa', textModifier: 'Rain Shower/ Fog', narration: '1100' },
     1181: { iconFile: 'LtRa', textModifier: 'Light Rain Shower/ Fog' },
     1182: { iconFile: 'Ra', textModifier: 'Heavy Rain Shower/ Fog' },
     1190: { iconFile: 'LtRa', textModifier: 'Rain Shower/ Windy' },
     1191: { iconFile: 'LtRa', textModifier: 'Light Rain Shower/ Windy' },
     1192: { iconFile: 'WndRa', textModifier: 'Heavy Rain Shower/ Windy' },
-    1200: { iconFile: 'Ra', textModifier: 'Rain' },
-    1201: { iconFile: 'LtRa', textModifier: 'Light Rain' },
-    1202: { iconFile: 'HvyRa', textModifier: 'Heavy Rain' },
+    1200: { iconFile: 'Ra', textModifier: 'Rain', narration: '1200' },
+    1201: { iconFile: 'LtRa', textModifier: 'Light Rain', narration: '1101' },
+    1202: { iconFile: 'HvyRa', textModifier: 'Heavy Rain', narration: '1102' },
     1210: { iconFile: 'SltFrzRa', textModifier: 'Freezing Rain/ Sleet' },
     1211: { iconFile: 'SltFrzRa', textModifier: 'Light Freezing Rain/ Sleet' },
     1212: { iconFile: 'SltFrzRa', textModifier: 'Heavy Freezing Rain/ Sleet' },
@@ -273,9 +273,9 @@ var codeToCurrent = {
     1990: { iconFile: 'Dust', textModifier: 'Widespread Dust/ Windy' },
     1991: { iconFile: 'Dust', textModifier: 'Low Drifting Dust/ Windy' },
     1992: { iconFile: 'Dust', textModifier: 'Blowing Dust/ Windy' },
-    2000: { iconFile: 'Fog', textModifier: 'Fog' },
+    2000: { iconFile: 'Fog', textModifier: 'Fog', narration: '2000' },
     2001: { iconFile: 'Fog', textModifier: 'Patches of Fog' },
-    2002: { iconFile: 'Cld', textModifier: 'Mist' },
+    2002: { iconFile: 'Cld', textModifier: 'Mist', narration: '2000' },
     2021: { iconFile: 'Fog', textModifier: 'Shallow Fog' },
     2022: { iconFile: 'Fog', textModifier: 'Partial Fog' },
     2081: { iconFile: 'Fog', textModifier: 'Shallow Fog/ Windy' },
@@ -283,7 +283,7 @@ var codeToCurrent = {
     2090: { iconFile: 'Fog', textModifier: 'Fog/Windy' },
     2091: { iconFile: 'Fog', textModifier: 'Patches of Fog/ Windy' },
     2092: { iconFile: 'Wnd', textModifier: 'Mist/Windy' },
-    2100: { iconFile: 'Haze', textModifier: 'Haze' },
+    2100: { iconFile: 'Haze', textModifier: 'Haze', narration: '2100' },
     2190: { iconFile: 'Haze', textModifier: 'Haze/Windy' },
     2200: { iconFile: 'Smoke', textModifier: 'Smoke' },
     2290: { iconFile: 'Smoke', textModifier: 'Smoke/Windy' },
@@ -1179,12 +1179,6 @@ var regionalMapCities = [
     { name: "State College", lat: 40.793, lon: -77.86, left: 3475, top: -170, exclude: "Atlantic City" }
 ]
 
-function displayOnCrawl(alert){
-    var alt = {"TOR":true}[alert];
-    if(alt != true) return false;
-    return alt;
-}
-
 var slideFlavors = {
     "60sec": [
         {
@@ -1347,8 +1341,9 @@ var slideFlavors = {
                 {function:"bulletin",slideDelay:8000},
                 {function:"currentConditions",slideDelay:8000},
                 {function:"nearbyCities",slides:2,slideDelay:6000},
+                {function:"mapCurrent",slideDelay:8000},
                 {function:"radarDoppler",slideDelay:8000},
-                {function:"radarSatellite",slideDelay:8000},
+                //{function:"radarSatellite",slideDelay:8000},
                 {function:"almanac",slideDelay:8000},
                 {function:"airQuality",slideDelay:8000},
                 {function:"daypartForecast",slideDelay:8000},

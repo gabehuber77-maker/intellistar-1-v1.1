@@ -17,6 +17,8 @@ var queryFail = false;
 let locationQueue = [];
 let newCities = [];
 function grabLocation() {
+    $("#startbutton").css("opacity", "0.5");
+    $("#startbutton").css("pointer-events", "none");
     locationConfig.mainCity = {displayname: "", extraname: "", lat: "", lon: "", state: "", stateFull: ""}
     locationQueue = [];
     newCities = [];

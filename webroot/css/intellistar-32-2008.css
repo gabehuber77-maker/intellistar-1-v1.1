@@ -218,7 +218,7 @@
     background-size: cover;
     right: 0;
     top: 68px;
-    z-index: 3;
+    z-index: 5;
 }
 .satellite .banner {
     position: absolute;
@@ -262,11 +262,11 @@
     margin-left: 11px;
 }
 .radar .header {
-    z-index: 4;
+    z-index: 6;
     left: 20px;
 }
 .satellite .header {
-    z-index: 4;
+    z-index: 6;
     left: 15px;
     top: 3px;
 }
@@ -274,13 +274,28 @@
     position: absolute;
     width: 1620px;
     height: 1080px;
-    filter: drop-shadow(2px 2px 0px #000);
-    z-index: 1;
+    filter: drop-shadow(12px 8px 0px #000);
+    z-index: 2;
+}
+#regradar {
+    filter: drop-shadow(6px 4px 0px #000) !important;
 }
 #locmap, #regmap {
     position: absolute;
     width: 1620px;
     height: 1080px;
+}
+#locoutlines, #regoutlines {
+    position: absolute;
+    width: 1620px;
+    height: 1080px;
+    z-index: 1;
+}
+#locoutlinestrans, #regoutlinestrans {
+    position: absolute;
+    width: 1620px;
+    height: 1080px;
+    z-index: 3;
 }
 
 .current-conditions .city-name {

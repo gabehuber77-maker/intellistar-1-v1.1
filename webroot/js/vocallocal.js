@@ -15,6 +15,7 @@ function vocallocalCC(){
 
     //COND
     var condi = codeToCurrent[weatherInfo.currentConditions.icon].narration;
+    if(condi == undefined){condi == weatherInfo.currentConditions.icon}
     var condit = condPath + condi + '.wav'
     narrationArr.push(condit)
 

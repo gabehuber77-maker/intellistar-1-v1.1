@@ -3,12 +3,7 @@ var map_key = 'YOUR_MAP_KEY';
 var traf_key = 'YOUR_TRAFFIC_KEY';
 
 var appearanceSettings = {
-    marqueeAd: [
-        "You don't want any monkey business going on when getting an oil change. That's why you come to Grease Monkey Auto. We offer oil changes, car washes, and much more. Log onto greasemonkeyauto.com and schedule your appointment.",
-        "Mark's Pizzeria prides itself on bringing you the freshest ingredients and the most professional service in Western New York for over 40 years. Log on to markspizzeria.com to get coupons and save big on pizza, wings, and more! We'll treat you like family at Mark's; Simply the best in your neighborhood!",
-        "If you are interested in TWC, EAS, or anything weather/tech related, join Mist Weather Media! Visit mistwx.com/discord right now!",
-        "Also check out other sims on weatherstar.dev, your place for Local on the 8s simulations!"
-    ],
+    marqueeAd: ["network"],
     localWeatherID: "XXXXX", //Keep it at XXXXX to generate a random local weather ID. Otherwise, put a 5 digit number.
     aspectRatio: 3/2, //For native resolution, use 3/2. For TV native resolution, use 4/3. There are no other aspect ratio options. Default is 3/2. 
     // ^ 4/3 is not yet supported.
@@ -16,7 +11,7 @@ var appearanceSettings = {
     ldlType: 'both', //what you want to see on ldl. 'observations' = only observations / 'both' = both / if anything else is put here, the sim will default to only observations
     startupTime: 4000, //How long you want to wait for it to start up.
     graphicsPackage: 2008, //the package for graphics. 2007 will have blue text, while 2008 will have black text.
-    version: "1.0"
+    version: "1.01"
 }
 
 var slideSettings = {

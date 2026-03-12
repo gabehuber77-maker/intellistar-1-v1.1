@@ -52,10 +52,10 @@
     <link rel="preload" as="image" href="images/Advisory.png">
     <link rel="preload" as="image" href="images/Warning.png">
 
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.js'></script>
-    <link href='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.css' rel='stylesheet' />
+    <script src='js/utils/mapbox-gl.js'></script>
+    <link href='js/utils/mapbox-gl.css' rel='stylesheet' />
+    <script src='js/utils/maplibre-gl.js'></script>
+    <link href='js/utils/maplibre-gl.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -322,8 +322,15 @@
                 <div class="banner"></div>
                 <div id="locradar" style="display:none;"></div>
                 <div id="locmap" style="display:none;"></div>
+                <div id="locoutlines" style="display:none;"></div>
+                <div id="locoutlinestrans" style="display:none;"></div>
+                <div id="loccities" style="display:none; opacity: 0.5;"></div>
+
                 <div id="regradar" style="display:none;"></div>
                 <div id="regmap" style="display:none;"></div>
+                <div id="regoutlines" style="display:none;"></div>
+                <div id="regoutlinestrans" style="display:none;"></div>
+                <div id="regcities" style="display:none; opacity: 0.5;"></div>
             </div>
             <div class="satellite" style="display: none;">
                 <div class="header">Radar Satellite</div>
@@ -573,7 +580,8 @@
                 <div class="enablevltext">Enable VocalLocal (BETA):</div>
                 <input type="checkbox" id="enablevlcb">
             </div>
-            <button id="startbutton" onclick="startProgram()">Start</button>
+            <button id="startbutton" onclick="startProgram()"
+            style="pointer-events: none; opacity: 0.5;">Start</button>
             <h3 id="promo" class="changecolor" style="color: #171717;">Created by</h3>
             <h3 id="promoii" class="changecolor" style="color: #171717;">, brought to you by </h3>
             <div class="jwx"><a href="https://www.youtube.com/@jensonwx" target="_blank" title="JensonWX"></a></div>

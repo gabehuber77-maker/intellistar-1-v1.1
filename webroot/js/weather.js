@@ -61,11 +61,11 @@ var weatherInfo = {
     },
     radarUnavailable: false,
     monthlyPrecip: "",
-    grabComplete: false
 }
 
 async function grabData() {
-    weatherInfo.grabComplete = false;
+    $("#startbutton").css("opacity", "0.5");
+    $("#startbutton").css("pointer-events", "none");
     weatherInfo.specialModes.bulletin = false;
     weatherInfo.specialModes.precip = false;
     var now = Date.now();

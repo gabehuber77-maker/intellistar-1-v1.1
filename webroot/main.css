@@ -564,13 +564,12 @@ h3#promoii {
     z-index: 1000;
 }
 .mistpromo {
-    background-image: url(images/mistlogo2025.png);
+    background-image: url(images/mistlogo2026.png);
     background-size: 100% 100%;
     width: 251.5px;
     height: 120px;
     position: absolute;
     top: 670px;
     left: 920px;
-    filter: drop-shadow(2px 2px 5px black);
     z-index: 1000;
 }

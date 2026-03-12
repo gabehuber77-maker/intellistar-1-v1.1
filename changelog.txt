@@ -1,0 +1,7 @@
+Make sure to report any bugs or issues in the Issues tab!
+= MARCH 12, 2026 | VERSION 1.01 =
+ -  Fixed sim hanging after bulletin slide for the 120 second flavor
+ -  More accurate basemaps
+ -  Fixed certain conditions not giving current conditions narration
+ -  Enter key now works main location search
+ -  Other various fixes

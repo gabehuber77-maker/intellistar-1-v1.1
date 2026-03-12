@@ -45,9 +45,10 @@ document.addEventListener('DOMContentLoaded', () =>{
     document.getElementById('locsearchlookup')
         .addEventListener('keydown', (event) => {
             if(event.key == "Enter"){
-                console.log(event);
                 $("#startbutton").css("opacity", "0.5");
                 $("#startbutton").css("pointer-events", "none");
+                locationQuery = document.getElementById('locsearchlookup').value;
+                locationSearch('main', 'locsearch')
             }
         })
     document.getElementById('locsearchlookup')
@@ -134,6 +135,17 @@ document.addEventListener('DOMContentLoaded', () =>{
             }
         })
 
+        $.getJSON("https://mistwx.com/crawlnetwork.json", function(data){
+            console.log(data);
+            if(appearanceSettings.marqueeAd[0] == "network"){
+                console.log(Number(appearanceSettings.version) < Number(data.simVersions.intellistar))
+                appearanceSettings.marqueeAd = data.crawls.intellistar;
+            }
+            if(Number(appearanceSettings.version) < Number(data.simVersions.intellistar)){
+                console.log(Number(appearanceSettings.version), Number(data.simVersions.intellistar))
+                alert("New update available. Download latest version at\nhttps://github.com/MistWeatherMedia/intellistar-1")
+            }
+        })
 })
 
 /**
@@ -167,6 +179,7 @@ async function startProgram() {
         $("#blackscreen").fadeOut(0);
         slideKickOff();
         startLoops();
+        //addRadarCities();
     }, appearanceSettings.startupTime);
 }
 
@@ -182,6 +195,7 @@ function locationSearch(type, id, i){
                 }, 2500);
             });
         }
+        console.log(locationQuery);
         mainquery = locationQuery;
         grabLocation();
         setTimeout(() => {
