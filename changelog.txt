@@ -1,4 +1,12 @@
 Make sure to report any bugs or issues in the Issues tab!
+= MARCH 13, 2026 | VERSION 1.02 =
+ -  Major settings panel fixes/rewrite
+ -  Loading options are now available
+ -  Vocal local improvements
+ -  Extra flavor settings buttons have been removed indefinitely
+ -  Added "s" to end of flavor selection
+ -  Radar accounts for areas outside of CONUS
+ -  Other various fixes
 = MARCH 12, 2026 | VERSION 1.01 =
  -  Fixed sim hanging after bulletin slide for the 120 second flavor
  -  More accurate basemaps

@@ -55,7 +55,7 @@ function vocallocalLF(idx, durr){
             longformDuration += longform[lfNar[i]].duration;
             continue;
         }
-        if(highlow[lfNar[i]]){
+        if(highlow[lfNar[i].replace("Around ", "").replace("Near ", "")]){
             highlowAudio = vocallocalPath + 'highlow/' + highlow[lfNar[i]].name + '.wav';
             longformDuration += highlow[lfNar[i]].duration;
             continue;

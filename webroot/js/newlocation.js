@@ -16,7 +16,9 @@ var mainquery = undefined;
 var queryFail = false;
 let locationQueue = [];
 let newCities = [];
-function grabLocation() {
+async function grabLocation() {
+    clearInterval(locNameInterval);
+    clearInterval(dataGrabInterval);
     $("#startbutton").css("opacity", "0.5");
     $("#startbutton").css("pointer-events", "none");
     locationConfig.mainCity = {displayname: "", extraname: "", lat: "", lon: "", state: "", stateFull: ""}
@@ -25,28 +27,15 @@ function grabLocation() {
     locationConfig.eightCities.cities = [];
     locationConfig.regionalMap = [];
     getMainCity(mainquery);
-    setTimeout(()=>{
-        if(queryFail == true){
-            throw new Error("Location grab failed.");
-        }
-        $('.loctext')
-            .text("Location Name: " + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ", " + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ", " + locationConfig.mainCity.stateFull : '')));
-        console.log(locationConfig)
-        setTimeout(() => {
-            grabData().then(() =>{
-                let ssf = slideSettings.flavor != '' ? slideSettings.flavor : 120;
-                slideFlavor = flavorPicker(ssf, {
-                    bulletin: weatherInfo.specialModes.bulletin, 
-                    precip: weatherInfo.specialModes.precip
-                });
-            })
-        }, 2000);
-    },2000)
+    setTimeout(() => {
+        mainquery = undefined;
+    }, 1000);
 }
 
 function getMainCity(query) {
     if (query != undefined) {
         $.getJSON("https://api.weather.com/v3/location/search?query=" + query + "&language=en-US&format=json&apiKey=" + api_key, function (data) {
+            getMapStyle(data.location.country[0], data.location.adminDistrictCode[0]);
             locationConfig.mainCity.displayname = data.location.displayName[0];
             locationConfig.mainCity.extraname = data.location.displayName[0];
             locationConfig.mainCity.lat = data.location.latitude[0];
@@ -64,14 +53,13 @@ function getMainCity(query) {
         })
     } else if (locationSettings.mainCity.autoFind == false) {
         $.getJSON("https://api.weather.com/v3/location/point?" + locationSettings.mainCity.type + "=" + locationSettings.mainCity.val + "&language=en-US&format=json&apiKey=" + api_key, function (data) {
-            locationConfig.mainCity.displayname = data.location.displayName;
-            locationConfig.mainCity.extraname = data.location.displayName;
+            locationConfig.mainCity.displayname = locationSettings.mainCity.displayname;
+            locationConfig.mainCity.extraname = locationSettings.mainCity.extraname;
             locationConfig.mainCity.lat = data.location.latitude;
             locationConfig.mainCity.lon = data.location.longitude;
             locationConfig.mainCity.state = data.location.adminDistrictCode;
             locationConfig.mainCity.stateFull = data.location.adminDistrict;
             setTimeout(() => {
-                locationQueue.push(locationConfig.mainCity);
                 getNearbyCities();
                 sortRegionalList();
             }, 50);
@@ -81,6 +69,7 @@ function getMainCity(query) {
         })
     } else {
         $.getJSON("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6&exposeDate=true", function (data) {
+            getMapStyle(data.country, data.region);
             locationConfig.mainCity.displayname = data.city;
             locationConfig.mainCity.extraname = data.city;
             locationConfig.mainCity.lat = data.lat;
@@ -100,14 +89,19 @@ function getMainCity(query) {
 }
 //bit of a rewrite inspired from BFS nearby loc pull
 function getNearbyCities() {
-    let locPull = locationQueue.shift();
+    let locPull;
+    newCities = []
     if (locationSettings.eightCities.autoFind == false) {
         for (let i = 0; i < locationSettings.eightCities.cities.length; i++) {
             setTimeout(() => {
                 createNewCity(locationSettings.eightCities.cities[i].type, locationSettings.eightCities.cities[i].val, i, true);
             }, 50 * i);
         }
+        setTimeout(() => {
+            locationConfig.eightCities.cities = newCities;
+        }, 1000);
     } else {
+        locPull = locationQueue.shift();
         $.getJSON(`https://api.weather.com/v3/location/near?geocode=${locPull.lat},${locPull.lon}&product=observation&format=json&apiKey=${api_key}`, function(data){
             for(let i = 0; i < data.location.latitude.length; i++){
                 createNewCity("geocode", `${data.location.latitude[i]},${data.location.longitude[i]}`, i, false);
@@ -116,8 +110,6 @@ function getNearbyCities() {
         setTimeout(() => {
             if(newCities.length >= 8){
                 locationConfig.eightCities.cities = newCities.sort((a, b) => a.displayname.localeCompare(b.displayname));
-                refreshAdvLocPage()
-                allExtraCities()
             } else {
                 locationQueue.push(newCities[newCities.length - 1]);
                 getNearbyCities()
@@ -158,7 +150,6 @@ function createNewExtraCity(i){
         locationConfig.eightCities.cities[i].lon = data.location.longitude[0];
         locationConfig.eightCities.cities[i].state = data.location.adminDistrictCode[0];
         locationConfig.eightCities.cities[i].stateFull = data.location.adminDistrict[0];
-        allExtraCities()
         setTimeout(() => {
             grabNearbyCC();
         }, 1000);
@@ -259,4 +250,41 @@ function sortRegionalList(){
     //console.log(locationConfig.regionalMap);
 }
 
-grabLocation();
+grabLocation().then(() =>{
+    setTimeout(() => {
+        onLocationInit()
+    }, 100);
+});
+
+//some areas do not show up on the i1 mercator so we'll compromise via using the old style for those areas
+function getMapStyle(country, state){
+    if(country == "United States" && (state != "AK" && state != "HI")){
+        mapStyle = "mapbox://styles/colster/cmiccqynn00as01s4bt6501il";
+    }else{
+        mapStyle = {
+            version: 8,
+            sources: {
+                "raster-tiles": {
+                type: "raster",
+                tiles: [
+                    "https://api.mapbox.com/styles/v1/goldbblazez/ckgc8lzdz4lzh19qt7q9wbbr9/tiles/{z}/{x}/{y}?access_token=" + map_key
+                ],
+                tileSize: 512,
+                },
+            },
+            layers: [
+                {
+                id: "basemap",
+                type: "raster",
+                source: "raster-tiles",
+                layout: { visibility: "visible" },
+                minzoom: 0,
+                maxzoom: 22,
+                paint: {
+                    "raster-opacity": 1,
+                },
+                },
+            ],
+        }
+    }
+}

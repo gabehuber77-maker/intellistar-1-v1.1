@@ -72,10 +72,10 @@
     <script type="text/javascript" src="js/extras.js"></script>
     <script type="text/javascript" src="js/audio.js"></script>
     <script type="text/javascript" src="js/vocallocal.js"></script>
+    <script type="text/javascript" src="js/settings.js"></script>
     <script type="text/javascript" src="js/newlocation.js"></script>
     <script type="text/javascript" src="js/weather.js"></script>
     <script type="text/javascript" src="js/radar.js"></script>
-    <script type="text/javascript" src="js/settings.js"></script>
     <script type="text/javascript" src="js/ldl.js"></script>
     <script type="text/javascript" src="js/slides.js"></script>
     <div id="blackscreen" class="container"
@@ -510,19 +510,14 @@
         <div id="basic">
             <div class="box"></div>
             <div class="boxheader changecolor" style="color: #171717;">INTELLISTAR SIMULATOR</div>
-            <div class="version changecolor" style="color: #171717;">v1.0</div>
+            <div class="version changecolor" style="color: #171717;">v</div>
             <div class="location changecolor" style="color: #171717;">
                 <div class="loctext changecolor">Location Name:</div>
                 <input type="text" class="input" id="locsearchlookup" autocomplete="off"
                     placeholder="Search for location here...">
-                <button id="locsearch" title="Search" onclick="locationSearch('main', 'locsearch')"><img
+                <button id="locsearch" title="Search" onclick="locationSearch('locsearchlookup')"><img
                         src="images/settings/search.png" style="width: 28px; top: 50%;"></button>
-                <button id="extralocbutton" title="Advanced Location Settings" onclick="changeSlide('basic', 'morelocation', function(){
-                        $('.loccontainer .mainloc')
-                            .text('Main Location: ' + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ', ' + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ', ' + locationConfig.mainCity.stateFull : '')));
-                        $('.loccontainer .mainextraloc').text('Extra Name: ' + locationConfig.mainCity.extraname);
-                        allExtraCities()
-                    })">
+                <button id="extralocbutton" title="Advanced Location Settings" onclick="changeSlide('basic', 'morelocation')">
                     <div>...</div>
                 </button>
                 <div class="locsearchtext" style="color: green; display: none;">Location updated!</div>
@@ -538,10 +533,10 @@
                 <button id="flavor120" class="flavorbutton" onclick="flavorChanger('120')">
                     <div>120</div>
                 </button>
-                <button id="flavormore" class="flavorbutton"
+                <!-- <button id="flavormore" class="flavorbutton"
                     onclick="changeSlide('basic', 'moreflavor', function(){setTimeout(() =>{flavorChanger('')},500)})">
                     <div>...</div>
-                </button>
+                </button> -->
             </div>
             <div class="versions changecolor" style="color: #171717;">
                 <div class="versionstext changecolor">Version: 2008</div>
@@ -594,7 +589,7 @@
                 <div class="mainloc">Main Location: </div>
                 <input type="text" class="input" id="advlocsearchlookup" autocomplete="off"
                     placeholder="Search for location here...">
-                <button id="advlocsearch" title="Search" onclick="locationSearch('main', 'advlocsearch')"><img
+                <button id="advlocsearch" title="Search" onclick="locationSearch('advlocsearchlookup')"><img
                         src="images/settings/search.png" style="width: 28px; top: 50%;"></button>
                 <div class="mainextraloc">Extra Name: </div>
                 <input type="text" class="input" id="extranameinput" autocomplete="off"
@@ -667,7 +662,7 @@
                 <button id="backbutton" onclick="changeSlide('morelocation', 'basic')">
                     <div>Back</div>
                 </button>
-                <button id="savebutton" class="extraadvbutton" onclick="saveLocationSettings(true)">
+                <button id="savebutton" class="extraadvbutton" onclick="saveLocationSettings()">
                     <div>Save</div>
                 </button>
                 <button id="cookiessave" class="extraadvbutton" onclick="saveLocationCookies()">
@@ -676,30 +671,24 @@
                 <button id="downloadconfig" class="extraadvbutton" onclick="downloadConfig()">
                     <div>Download Config</div>
                 </button>
-                <button id="cookiesload" class="extraadvbutton" onclick="loadLocationCookies()"
-                    style="pointer-events: none; opacity: 0.5;"
-                    title="Currently being worked on. Sorry for the inconvenience!">
+                <button id="cookiesload" class="extraadvbutton" onclick="loadLocationCookies()">
                     <div>Load from Cookies</div>
                 </button>
-                <button id="loadconfig" class="extraadvbutton" onclick="
-                    document.getElementById('locloadconfiginput').click();
-                    jsonFuncs();" style="pointer-events: none; opacity: 0.5;"
-                    title="Currently being worked on. Sorry for the inconvenience!">
+                <button id="loadconfig" class="extraadvbutton" onclick="document.getElementById('locloadconfiginput').click();">
                     <div>Load from Config</div>
                 </button>
                 <input id="locloadconfiginput" type="file" accept="application/json"
-                    style="opacity: 0; cursor: pointer;">
+                    style="opacity: 0; cursor: pointer;" onchange="jsonFuncs()">
             </div>
-            <div class="loadoptionswarning">Loading options will be added in a future update!</div>
         </div>
-        <div id="moreflavor" class="changecolor" style="color: #171717; display: none;">
+        <!-- <div id="moreflavor" class="changecolor" style="color: #171717; display: none;">
             <div class="box" style="display: none;"></div>
             <div class="boxheader changecolor" style="color: #171717;">ADVANCED FLAVOR SETTINGS</div>
             <div class="moreflavortext">Advanced flavor settings will be released at a later date!</div>
             <button id="backbutton" onclick="changeSlide('moreflavor', 'basic')">
                 <div>Back</div>
             </button>
-        </div>
+        </div> -->
     </div>
 </body>
 

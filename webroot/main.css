@@ -532,15 +532,6 @@ button#versions2008 {
     left: 540px;
 }
 
-.loadoptionswarning {
-  position: absolute;
-  bottom: -10%;
-  width: 1280px;
-  text-align: center;
-  font-size: 24px;
-  color: inherit;
-}
-
 h3#promo, h3#promoii {
     position: absolute;
     font-size: 48px;

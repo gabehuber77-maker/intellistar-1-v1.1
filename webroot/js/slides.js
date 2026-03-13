@@ -277,8 +277,10 @@ var slidePrograms = {
         $('.radar').fadeIn(0);
         $('#regradar').fadeIn(0);
         $('#regmap').fadeIn(0);
-        $('#regoutlines').fadeIn(0);
-        $('#regoutlinestrans').fadeIn(0);
+        if(mapStyle == "mapbox://styles/colster/cmiccqynn00as01s4bt6501il"){
+            $('#regoutlines').fadeIn(0);
+            $('#regoutlinestrans').fadeIn(0);
+        }
         regmap.resize();
         regradar.resize();
         regoutlines.resize();
@@ -301,8 +303,10 @@ var slidePrograms = {
         $('.radar').fadeIn(0);
         $('#locradar').fadeIn(0);
         $('#locmap').fadeIn(0);
-        $('#locoutlines').fadeIn(0);
-        $('#locoutlinestrans').fadeIn(0);
+        if(mapStyle == "mapbox://styles/colster/cmiccqynn00as01s4bt6501il"){
+            $('#locoutlines').fadeIn(0);
+            $('#locoutlinestrans').fadeIn(0);
+        }
         locmap.resize();
         locradar.resize();
         locoutlines.resize();
@@ -381,15 +385,15 @@ var slidePrograms = {
             }, 167);
         }, slideLength - 167);
     },
-    // mapTest() {
-    //     $('.map').fadeIn(0);
-    //     var mapDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
-    //     for (let i = 0; i < locationConfig.regionalMap.length; i++) {
-    //         $(`.map-cities .city.${mapDivs[i]}`).fadeIn(0);
-    //         $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap[i].name)
-    //         $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap[i].left, top: locationConfig.regionalMap[i].top })
-    //     }
-    // },
+    mapTest() {
+        $('.map').fadeIn(0);
+        var mapDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
+        for (let i = 0; i < locationConfig.regionalMap.length; i++) {
+            $(`.map-cities .city.${mapDivs[i]}`).fadeIn(0);
+            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap[i].name)
+            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap[i].left, top: locationConfig.regionalMap[i].top })
+        }
+    },
     mapCurrent() {
         $('.map').fadeIn(0);
         $('.map .header').text("Now");
@@ -451,19 +455,6 @@ var slidePrograms = {
                 }
             }
         }, slideLength);
-    },
-    //last few slides to deal with
-    outdoorActivity() {
-
-    },
-    almanacMoons() {
-
-    },
-    trafficReport() {
-        $(".traffic-report").fadeIn(0);
-    },
-    trafficOverview() {
-
     }
 } //end of slidePrograms
 function showSlides() {

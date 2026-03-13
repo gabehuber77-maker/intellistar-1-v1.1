@@ -11,11 +11,11 @@ var appearanceSettings = {
     ldlType: 'both', //what you want to see on ldl. 'observations' = only observations / 'both' = both / if anything else is put here, the sim will default to only observations
     startupTime: 4000, //How long you want to wait for it to start up.
     graphicsPackage: 2008, //the package for graphics. 2007 will have blue text, while 2008 will have black text.
-    version: "1.01"
+    version: "1.02"
 }
 
 var slideSettings = {
-    flavor: '',
+    flavor: '120',
     bulletin: false,
     precip: false,
     order: [
@@ -60,6 +60,7 @@ var locationSettings = {/*This is what you can edit, anything under the lcationS
     mainCity: {
         autoFind: true, //set to false if you want to manually set the location
         displayname:"",//set this to whatever you want the main location's name to be
+        extraname:"",
         type:"",//choose the following types from below:
         //geocode -- (coordinates)
         //postalKey -- (zip code)

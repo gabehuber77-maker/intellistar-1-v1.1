@@ -1,64 +1,15 @@
 var inSettings = true;
-var locationQuery = undefined;
-var cachedLocationConfig;
-var songURL;
-var extranameval = undefined;
-
-var defaultSlideFlavor = {
-    flavor: '',
-    bulletin: false,
-    precip: false,
-    order: [
-        {function:"currentConditions",slideDelay:8000},
-        {function:"nearbyCities",slides:2,slideDelay:6000},
-        {function:"mapCurrent",slideDelay:8000},
-        {function:"radarDoppler",slideDelay:8000},
-        {function:"almanac",slideDelay:8000},
-        {function:"airQuality",slideDelay:8000},
-        {function:"daypartForecast",slideDelay:8000},
-        {function:"mapForecast",slides:2,slideDelay:7000},
-        {function:"localForecast",slides:4,slideDelay:7500},
-        {function:"weekAhead",slideDelay:8000},
-    ]
-}
-function refreshAdvLocPage(){
-    $('.loctext')
-        .text("Location Name: " + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ", " + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ", " + locationConfig.mainCity.stateFull : '')));
-    $('.loccontainer .mainloc')
-        .text('Main Location: ' + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ', ' + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ', ' + locationConfig.mainCity.stateFull : '')));         
-    $('.loccontainer .mainextraloc').text("Extra Name: " + locationConfig.mainCity.extraname);
-}
 document.addEventListener('DOMContentLoaded', () =>{
-    $("#settings-menu .version").text("v" + appearanceSettings.version);
-    if(weatherInfo.grabComplete == false){
-        $("#startbutton").css("opacity", "0.5");
-        $("#startbutton").css("pointer-events", "none");
-    }
-    setTimeout(refreshAdvLocPage, 500);
-    if(slideSettings.flavor == ''){
-        flavorPicker('120', {bulletin: false, precip: false});
-        $('.flavortext').text("Flavor: 120");
-    }else{
-        flavorPicker(slideSettings.flavor, {bulletin: false, precip: false});
-    }
-
-    document.getElementById('locsearchlookup')
-        .addEventListener('keydown', (event) => {
-            if(event.key == "Enter"){
-                $("#startbutton").css("opacity", "0.5");
-                $("#startbutton").css("pointer-events", "none");
-                locationQuery = document.getElementById('locsearchlookup').value;
-                locationSearch('main', 'locsearch')
-            }
-        })
-    document.getElementById('locsearchlookup')
-        .addEventListener('change', (event) =>{
-            locationQuery = event.target.value;
-        })
-    document.getElementById('advlocsearchlookup')
-        .addEventListener('change', (event) =>{
-            locationQuery = event.target.value;
-        })
+    $("#settings-menu .version").text(`v${appearanceSettings.version}`);
+    $("#settings-menu .flavortext").text("Flavor: " + slideSettings.flavor + "s");
+    $.getJSON("https://mistwx.com/crawlnetwork.json", function(data){
+        if(appearanceSettings.marqueeAd[0] == "network"){
+            appearanceSettings.marqueeAd = data.crawls.intellistar;
+        }
+        if(Number(appearanceSettings.version) < Number(data.simVersions.intellistar)){
+            alert("New update available. Download latest version at\nhttps://github.com/MistWeatherMedia/intellistar-1")
+        }
+    })
 
     document.getElementById("uploadsongbutton").addEventListener("click", () =>{
         document.getElementById("songuploadinput").click();
@@ -135,15 +86,16 @@ document.addEventListener('DOMContentLoaded', () =>{
             }
         })
 
-        $.getJSON("https://mistwx.com/crawlnetwork.json", function(data){
-            console.log(data);
-            if(appearanceSettings.marqueeAd[0] == "network"){
-                console.log(Number(appearanceSettings.version) < Number(data.simVersions.intellistar))
-                appearanceSettings.marqueeAd = data.crawls.intellistar;
+    document.getElementById("locsearchlookup")
+        .addEventListener("keyup", (k) =>{
+            if(k.key == "Enter"){
+                locationSearch('locsearchlookup')
             }
-            if(Number(appearanceSettings.version) < Number(data.simVersions.intellistar)){
-                console.log(Number(appearanceSettings.version), Number(data.simVersions.intellistar))
-                alert("New update available. Download latest version at\nhttps://github.com/MistWeatherMedia/intellistar-1")
+        })
+    document.getElementById("advlocsearchlookup")
+        .addEventListener("keyup", (k) =>{
+            if(k.key == "Enter"){
+                locationSearch('advlocsearchlookup')
             }
         })
 })
@@ -165,6 +117,33 @@ function changeSlide(id1, id2, callback){
     if(callback){callback()}
 }
 
+var locNameInterval, dataGrabInterval;
+var divs = ["i","ii","iii","iv","v","vi","vii","viii"]
+function setLocationText(){
+    function locNaming(){
+        $('.loctext').text("Location Name: " + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ", " + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ", " + locationConfig.mainCity.stateFull : ''))); 
+        $('.mainloc').text("Main Location: " + locationConfig.mainCity.displayname + (locationConfig.mainCity.state != null ? ", " + locationConfig.mainCity.state : (locationConfig.mainCity.stateFull != null ? ", " + locationConfig.mainCity.stateFull : ''))); 
+        $('.loccontainer .mainextraloc').text('Extra Name: ' + locationConfig.mainCity.extraname);
+        for(let i = 0; i < locationConfig.eightCities.cities.length; i++){
+            $(`.extracity.${divs[i]} .extrcitydisplayname`).text(locationConfig.eightCities.cities[i].displayname + (locationConfig.eightCities.cities[i].state != null ? ", " + locationConfig.eightCities.cities[i].state : (locationConfig.eightCities.cities[i].stateFull != null ? ", " + locationConfig.eightCities.cities[i].stateFull : '')))
+        }
+    }
+    locNaming();
+    locNameInterval = setInterval(locNaming, 1000);
+}
+
+function onLocationInit(){
+    console.log(locationConfig);
+    setLocationText();
+    setTimeout(grabData, 2500);
+    dataGrabInterval = setInterval(() =>{
+        if(inSettings == true){
+            console.log("New data grab");
+            grabData();
+        }
+    }, 60000);
+}
+
 async function startProgram() {
     inSettings = false;
     $("#settings-menu").fadeOut(0);
@@ -183,58 +162,23 @@ async function startProgram() {
     }, appearanceSettings.startupTime);
 }
 
-function locationSearch(type, id, i){
-    if(type === 'main'){
-        cachedLocationConfig = locationConfig;
-        if(locationQuery == undefined || locationQuery == ''){
-            $(`.${id}text`).css('color', 'darkred');
-            $(`.${id}text`).text("ERROR: Put in a value.");
-            $(`.${id}text`).fadeIn(0, function(){
-                setTimeout(() => {
-                    $(`.${id}text`).fadeOut(1000, 'linear');
-                }, 2500);
-            });
-        }
-        console.log(locationQuery);
-        mainquery = locationQuery;
-        grabLocation();
-        setTimeout(() => {
-            $("#startbutton").css("opacity", "0.5");
-            $("#startbutton").css("pointer-events", "none");
-            if(queryFail == true){
-                queryFail = false;
-                $(`.${id}text`).css('color', 'darkred');
-                $(`.${id}text`).text("ERROR: Location search failed.");
-                $(`.${id}text`).fadeIn(0, function(){
-                    setTimeout(() => {
-                        $(`.${id}text`).fadeOut(1000, 'linear');
-                    }, 2500);
-                });
-                return;
-            }
-        }, 2000);
-    }else if(type === "extra"){
-        
-    }
-}
-
 function flavorChanger(flv){
     //changing color
     switch (flv) {
         case '60':
-            $('.flavortext').text("Flavor: 60");
+            $('.flavortext').text("Flavor: 60s");
             $("#flavor60 div").css('color', 'red'); 
             $("#flavor90 div").css('color', ''); 
             $("#flavor120 div").css('color', ''); 
             break;
         case '90':
-            $('.flavortext').text("Flavor: 90");
+            $('.flavortext').text("Flavor: 90s");
             $("#flavor60 div").css('color', ''); 
             $("#flavor90 div").css('color', 'red'); 
             $("#flavor120 div").css('color', ''); 
             break;
         case '120':
-            $('.flavortext').text("Flavor: 120");
+            $('.flavortext').text("Flavor: 120s");
             $("#flavor60 div").css('color', ''); 
             $("#flavor90 div").css('color', ''); 
             $("#flavor120 div").css('color', 'red'); 
@@ -265,49 +209,114 @@ function flavorPicker(time, modes) {
     return flavor;
 }
 
+function locationSearch(id){
+    clearInterval(locNameInterval);
+    clearInterval(dataGrabInterval);
+    mainquery = document.getElementById(id).value;
+    grabLocation().then(() =>{
+        setTimeout(() => {
+            onLocationInit();
+        }, 1000);
+    });
+}
+
 function versionsChanger(version){
-    appearanceSettings.graphicsPackage = version;
+    let versionHex;
     $(".versionstext").text("Version: " + version);
-    let versionHex = version === 2007 ? "#304976" : "#171717";
-    $('.changecolor').css('color', versionHex);
+    switch(version){
+        case 2007:
+            versionHex = "#304976";
+            $('.changecolor').css('color', versionHex);
+        break;
+        case 2008:
+            versionHex = "#171717";
+            $('.changecolor').css('color', versionHex);
+    }
     $("#styles").append(`<link rel="stylesheet" href="css/intellistar-32-${version}.css">`)
     setTimeout(() => {
         $("#styles").children('link').first().remove();
     }, 10);
 }
 
-//advanced location settings from weatherstar xl sim
-function saveLocationSettings(fadesuccess){
-    locationSettings.mainCity.autoFind = false;
-    locationSettings.mainCity.displayname = locationConfig.mainCity.displayname;
-    locationSettings.mainCity.extraname = locationConfig.mainCity.extraname;
-    locationSettings.mainCity.type = "geocode";
-    locationSettings.mainCity.val = `${locationConfig.mainCity.lat},${locationConfig.mainCity.lon}`;
-    // for(var i = 0; i < 8; i++){
-    //     if(newEightCities[i].info != false){
-    //         locationConfig.eightCities.cities[i] = newEightCities[i];
-    //     }
-    // }
-    setTimeout(() => {
+function saveLocationSettings(){
+    try {
+        locationSettings.mainCity.autoFind = false;
         locationSettings.eightCities.autoFind = false;
-        for(var j = 0; j < 8; j++){
+        locationSettings.mainCity.displayname = locationConfig.mainCity.displayname;
+        locationSettings.mainCity.extraname = locationConfig.mainCity.extraname;
+        locationSettings.mainCity.type = "geocode";
+        locationSettings.mainCity.val = `${locationConfig.mainCity.lat},${locationConfig.mainCity.lon}`;
+        for(let j = 0; j < 8; j++){
             locationSettings.eightCities.cities[j].displayname = locationConfig.eightCities.cities[j].displayname;
             locationSettings.eightCities.cities[j].type = "geocode";
             locationSettings.eightCities.cities[j].val = `${locationConfig.eightCities.cities[j].lat},${locationConfig.eightCities.cities[j].lon}`;
         }
-        setTimeout(() => {
-            if(fadesuccess){
-                console.log(locationSettings);
-                console.log(locationConfig);
-                $('.extracitytext').fadeIn(0);
-                $('.extracitytext').text("Locations saved!");
-                $('.extracitytext').css('color', 'green');
+    } catch(error){
+        console.error(error);
+    }
+}
 
-                setTimeout(() => {
-                    $('.extracitytext').fadeOut(1000);
-                }, 2500);
-            }
-        }, 500);
+function downloadConfig(){
+    saveLocationSettings()
+    setTimeout(() => {
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(locationSettings));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", `${locationConfig.mainCity.displayname}-${Date.now()}.json`);
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }, 1500);
+}
+function jsonFuncs() {
+  //credit: MapGuy
+  const fileInput = document.getElementById('locloadconfiginput');
+  const file = fileInput.files[0];
+  if (!file) {
+    $('.json-warning').fadeIn(0)
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const json = JSON.parse(e.target.result);
+      console.log(json);
+      Object.assign(locationSettings, json);
+      console.log("Updated location settings:", locationSettings);
+        grabLocation().then(() =>{
+            setTimeout(() => {
+                onLocationInit()
+            }, 100);
+        });
+      setTimeout(() => {
+        $('.extracitytext').text("Success! JSON loaded.");
+        $('.extracitytext').css('color', 'green');
+        $('.extracitytext').fadeIn(0)
+        setTimeout(() => {
+            $('.extracitytext').fadeOut(1000);
+        }, 2500);
+      }, 1000);
+    } catch (err) {
+      console.error("Error parsing JSON:", err);
+      $('.extracitytext').text("ERROR: Something went wrong.");
+      $('.extracitytext').css('color', 'darkred');
+      $('.extracitytext').fadeIn(0)
+      setTimeout(() => {
+        $('.extracitytext').fadeOut(1000);
+      }, 2500);
+    }
+  };
+  reader.readAsText(file);
+}
+function saveExtraName(){
+    if(document.getElementById('extranameinput').value == undefined || document.getElementById('extranameinput').value == ''){
+        return;
+    }
+    locationConfig.mainCity.extraname = document.getElementById('extranameinput').value;
+    $('.mainextraloc').text("Extra Name: " + document.getElementById('extranameinput').value);
+    setTimeout(() => {
+        document.getElementById('extranameinput').value = '';
     }, 500);
 }
 
@@ -368,11 +377,13 @@ function loadLocationCookies(){
         locationSettings.eightCities.cities[i].val = getCookie(`eightCitiesVal${cookieDivs[i]}`);
     }
     setTimeout(() => {
-        locationSearch()
+        grabLocation().then(() =>{
+            setTimeout(() => {
+                onLocationInit()
+            }, 100);
+        });
         setTimeout(() => {
             console.log(locationSettings);
-            refreshAdvLocPage()
-            allExtraCities()
             $('.extracitytext').text("Success! Cookies loaded.");
             $('.extracitytext').css('color', 'green');
             $('.extracitytext').fadeIn(0);
@@ -381,73 +392,4 @@ function loadLocationCookies(){
             }, 2500);
         }, 500);
     }, 500);
-}
-function downloadConfig(){
-    saveLocationSettings()
-    setTimeout(() => {
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(locationSettings));
-        var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href",     dataStr);
-        downloadAnchorNode.setAttribute("download", `${locationConfig.mainCity.displayname}-${Date.now()}.json`);
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-    }, 1500);
-}
-function jsonFuncs() {
-  //credit: MapGuy
-  const fileInput = document.getElementById('locloadconfiginput');
-  const file = fileInput.files[0];
-  if (!file) {
-    $('.json-warning').fadeIn(0)
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const json = JSON.parse(e.target.result);
-      console.log(json);
-      Object.assign(locationSettings, json);
-      console.log("Updated location settings:", locationSettings);
-      locationSearch()
-      setTimeout(() => {
-        refreshAdvLocPage()
-        allExtraCities()
-        $('.extracitytext').text("Success! JSON loaded.");
-        $('.extracitytext').css('color', 'green');
-        $('.extracitytext').fadeIn(0)
-        setTimeout(() => {
-            $('.extracitytext').fadeOut(1000);
-        }, 2500);
-      }, 1000);
-    } catch (err) {
-      console.error("Error parsing JSON:", err);
-      $('.extracitytext').text("ERROR: Something went wrong.");
-      $('.extracitytext').css('color', 'darkred');
-      $('.extracitytext').fadeIn(0)
-      setTimeout(() => {
-        $('.extracitytext').fadeOut(1000);
-      }, 2500);
-    }
-  };
-  reader.readAsText(file);
-}
-
-function saveExtraName(){
-    if(document.getElementById('extranameinput').value == undefined || document.getElementById('extranameinput').value == ''){
-        return;
-    }
-    locationConfig.mainCity.extraname = document.getElementById('extranameinput').value;
-    $('.mainextraloc').text("Extra Name: " + document.getElementById('extranameinput').value);
-    setTimeout(() => {
-        document.getElementById('extranameinput').value = '';
-    }, 500);
-}
-
-function allExtraCities(){
-    var elDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii"]
-    for(let i = 0; i < locationConfig.eightCities.cities.length; i++){
-        $(`.extracity.${elDivs[i]} .extrcitydisplayname`).text(locationConfig.eightCities.cities[i].displayname + (locationConfig.eightCities.cities[i].state != null ? ", " + locationConfig.eightCities.cities[i].state : (locationConfig.eightCities.cities[i].stateFull != null ? ", " + locationConfig.eightCities.cities[i].stateFull : '')))
-    }
 }

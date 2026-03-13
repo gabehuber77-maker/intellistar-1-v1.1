@@ -3134,6 +3134,14 @@ var highlow = {
     "name": "LOW_40",
     "duration": 1301
   },
+  "Low near 40": {
+    "name": "LOW_40",
+    "duration": 1301
+  },
+  "Low 40": {
+    "name": "LOW_40",
+    "duration": 1301
+  },
   "Low 41": {
     "name": "LOW_41",
     "duration": 1573
@@ -3198,6 +3206,14 @@ var highlow = {
     "name": "LOW_55",
     "duration": 1845
   },
+  "Low near 55": {
+    "name": "LOW_55",
+    "duration": 1845
+  },
+  "Low 55": {
+    "name": "LOW_55",
+    "duration": 1845
+  },
   "Low 56": {
     "name": "LOW_56",
     "duration": 1802
@@ -3219,6 +3235,14 @@ var highlow = {
     "duration": 1264
   },
   "Low around 60": {
+    "name": "LOW_60",
+    "duration": 1461
+  },
+  "Low near 60": {
+    "name": "LOW_60",
+    "duration": 1461
+  },
+  "Low 60": {
     "name": "LOW_60",
     "duration": 1461
   },

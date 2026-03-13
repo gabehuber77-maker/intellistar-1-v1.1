@@ -121,6 +121,7 @@ async function grabNearbyCC() {
         weatherInfo.eightCities.noReport = true;
         return;
     }
+    weatherInfo.eightCities.noReport = false;
     weatherInfo.eightCities.cities = [];
     var url = "https://api.weather.com/v3/aggcommon/v3-wx-observations-current?geocodes="
     for (var l = 0; l < 8; l++) {
@@ -394,6 +395,7 @@ async function grabAlerts() {
     })
 }
 function grabAlertCrawl(dKey) {
+    if(weatherInfo.bulletin.crawlAlert.alert.detailKey == dKey) return;
     $.getJSON('https://api.weather.com/v3/alerts/detail?alertId=' + dKey + '&format=json&language=en-US&apiKey=' + api_key, function (data) {
         console.log(data);
         var alert = {
