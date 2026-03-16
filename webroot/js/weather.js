@@ -395,7 +395,9 @@ async function grabAlerts() {
     })
 }
 function grabAlertCrawl(dKey) {
-    if(weatherInfo.bulletin.crawlAlert.alert.detailKey == dKey) return;
+    if(weatherInfo.bulletin.crawlAlert.alert){
+        if(weatherInfo.bulletin.crawlAlert.alert.detailKey == dKey) return;
+    }
     $.getJSON('https://api.weather.com/v3/alerts/detail?alertId=' + dKey + '&format=json&language=en-US&apiKey=' + api_key, function (data) {
         console.log(data);
         var alert = {
