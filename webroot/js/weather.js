@@ -261,7 +261,7 @@ async function grabAlmanac() {
             weatherInfo.almanac.noReport = true;
             return;
         }
-        weatherInfo.almanac.stationname = data["v3-wx-almanac-daily-5day"].stationName[1].toUpperCase().replaceAll("INTERNATIONAL", "").replaceAll("AIRPORT", "");
+        weatherInfo.almanac.stationname = locationConfig.mainCity.displayname.toUpperCase();
         weatherInfo.almanac.average.high = data["v3-wx-almanac-daily-5day"].temperatureAverageMax[1];
         weatherInfo.almanac.average.low = data["v3-wx-almanac-daily-5day"].temperatureAverageMin[1];
         weatherInfo.almanac.record.high = data["v3-wx-almanac-daily-5day"].temperatureRecordMax[1];
@@ -327,8 +327,8 @@ async function grabDaypartForecast() {
 async function grabMapCityData(){
     weatherInfo.map.mapCities = [];
     var url = 'https://api.weather.com/v3/aggcommon/v3-wx-observations-current;v3-wx-forecast-daily-3day?geocodes='
-    for(let i = 0; i < locationConfig.regionalMap.length; i++){
-        url = url + `${locationConfig.regionalMap[i].lat},${locationConfig.regionalMap[i].lon};`
+    for(let i = 0; i < locationConfig.regionalMap.map.length; i++){
+        url = url + `${locationConfig.regionalMap.map[i].lat},${locationConfig.regionalMap.map[i].lon};`
     }
     url += "&language=en-US&units=e&format=json&apiKey=" + api_key;
     var midx = 0;
@@ -341,7 +341,7 @@ async function grabMapCityData(){
         data.forEach((ajaxedLoc, i) =>{
             //console.log(ajaxedLoc);
             var mapObj = {
-                name: locationConfig.regionalMap[i].name,
+                name: locationConfig.regionalMap.map[i].name,
                 current: {
                     temp: ajaxedLoc["v3-wx-observations-current"].temperature,
                     icon: ajaxedLoc["v3-wx-observations-current"].iconCodeExtend
@@ -369,7 +369,7 @@ async function grabAlerts() {
     $.getJSON(`https://api.weather.com/v3/alerts/headlines?geocode=${locationConfig.mainCity.lat},${locationConfig.mainCity.lon}&format=json&language=en-US&apiKey=${api_key}`, function (data) {
         if (!data) return;
         weatherInfo.bulletin.enabled = true;
-        for (var i = 0; i < data.alerts.length; i++) {
+        for (let i = 0; i < data.alerts.length; i++) {
             var bulletinAlert = {
                 name: data.alerts[i].eventDescription,
                 significance: data.alerts[i].significance,
@@ -395,7 +395,9 @@ async function grabAlerts() {
     })
 }
 function grabAlertCrawl(dKey) {
-    if(weatherInfo.bulletin.crawlAlert.alert.detailKey == dKey) return;
+    if(weatherInfo.bulletin.crawlAlert.alert){
+        if(weatherInfo.bulletin.crawlAlert.alert.detailKey == dKey) return;
+    }
     $.getJSON('https://api.weather.com/v3/alerts/detail?alertId=' + dKey + '&format=json&language=en-US&apiKey=' + api_key, function (data) {
         console.log(data);
         var alert = {
@@ -404,7 +406,7 @@ function grabAlertCrawl(dKey) {
             type: data.alertDetail.messageType,
             significance: data.alertDetail.significance,
             description: data.alertDetail.texts[0].description,
-            severe: isSevere(data.alertDetail.eventDescription),
+            severe: warningSettings[data.alertDetail.eventDescription].severe,
             detailKey: dKey
         }
         if (alert.severe) {

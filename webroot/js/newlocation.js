@@ -10,7 +10,18 @@ var locationConfig = {
     eightCities: {
         cities: [],
     },
-    regionalMap: []
+    regionalMap: {
+        leftPos: "",
+        topPos: "",
+        map: [],
+        autoFind: true
+    },
+    radarCities: {
+        local: [
+        ],
+        regional: [
+        ],
+    }
 }
 var mainquery = undefined;
 var queryFail = false;
@@ -25,14 +36,11 @@ async function grabLocation() {
     locationQueue = [];
     newCities = [];
     locationConfig.eightCities.cities = [];
-    locationConfig.regionalMap = [];
-    getMainCity(mainquery);
-    setTimeout(() => {
-        mainquery = undefined;
-    }, 1000);
+    locationConfig.regionalMap.map = [];
+    await getMainCity(mainquery).then(() =>{mainquery=undefined});
 }
 
-function getMainCity(query) {
+async function getMainCity(query) {
     if (query != undefined) {
         $.getJSON("https://api.weather.com/v3/location/search?query=" + query + "&language=en-US&format=json&apiKey=" + api_key, function (data) {
             getMapStyle(data.location.country[0], data.location.adminDistrictCode[0]);
@@ -42,6 +50,8 @@ function getMainCity(query) {
             locationConfig.mainCity.lon = data.location.longitude[0];
             locationConfig.mainCity.state = data.location.adminDistrictCode[0];
             locationConfig.mainCity.stateFull = data.location.adminDistrict[0];
+            locationConfig.radarCities.local[0] = {locationName:data.location.displayName[0],dotTopPos:520,dotLeftPos:810,nameTopMargin:-7,nameLeftMargin:43}
+            locationConfig.radarCities.regional[0] = {locationName:data.location.displayName[0],dotTopPos:520,dotLeftPos:810,nameTopMargin:-7,nameLeftMargin:43}
             setTimeout(() => {
                 locationQueue.push(locationConfig.mainCity);
                 getNearbyCities();
@@ -59,6 +69,9 @@ function getMainCity(query) {
             locationConfig.mainCity.lon = data.location.longitude;
             locationConfig.mainCity.state = data.location.adminDistrictCode;
             locationConfig.mainCity.stateFull = data.location.adminDistrict;
+            locationConfig.radarCities.local = locationSettings.radarCities.local;
+            locationConfig.radarCities.regional = locationSettings.radarCities.regional;
+            locationConfig.regionalMap.autoFind = locationSettings.mapCities.autoFind;
             setTimeout(() => {
                 getNearbyCities();
                 sortRegionalList();
@@ -76,6 +89,8 @@ function getMainCity(query) {
             locationConfig.mainCity.lon = data.lon;
             locationConfig.mainCity.state = data.region;
             locationConfig.mainCity.stateFull = data.regionName;
+            locationConfig.radarCities.local[0] = {locationName:data.city,dotTopPos:520,dotLeftPos:800,nameTopMargin:-7,nameLeftMargin:40}
+            locationConfig.radarCities.regional[0] = {locationName:data.city,dotTopPos:520,dotLeftPos:800,nameTopMargin:-7,nameLeftMargin:40}
             setTimeout(() => {
                 locationQueue.push(locationConfig.mainCity);
                 getNearbyCities();
@@ -167,87 +182,96 @@ function createNewExtraCity(i){
 var distances = []
 var rmBoundaries = [265, 270, 715, 630]
 function sortRegionalList(){
-    locationConfig.regionalMap = [];
-    distances = [];
-    for(var i = 0; i < regionalMapCities.length; i++){
-        let d = distanceByDegrees(locationConfig.mainCity, regionalMapCities[i])
-        var x = { distance: d[0], index: i, coords: [d[1], d[2]] }
-        distances.push(x);
-        //console.log(x);
-    }
-    distances.sort((a, b) => a.distance - b.distance);
-    //console.log(distances[0]);
-    centerMap(distances[0].index);
-    if (regionalMapCities[distances[0].index].type === 'pacific') {
-        rmBoundaries[2] = 415;
-        rmBoundaries[3] = 1015;
-    } else if (regionalMapCities[distances[0].index].type === 'pacific north'){
-        rmBoundaries[0] = 415;
-        rmBoundaries[1] = 170;
-        rmBoundaries[2] = 415;
-        rmBoundaries[3] = 1015;
-    } else if (regionalMapCities[distances[0].index].type === 'south'){
-        rmBoundaries[0] = 135;
-        rmBoundaries[1] = 400;
-    } else if (regionalMapCities[distances[0].index].type === 'atlantic south'){
-        rmBoundaries[0] = 135;
-        rmBoundaries[1] = 400;
-    } else if(regionalMapCities[distances[0].index].type === 'atlantic'){
-        rmBoundaries[2] = 1015;
-        rmBoundaries[3] = 415;
-    } else if (regionalMapCities[distances[0].index].type === 'atlantic north') {
-        rmBoundaries[0] = 415;
-        rmBoundaries[1] = 170;
-        rmBoundaries[2] = 1015;
-        rmBoundaries[3] = 415;
-    } else if (regionalMapCities[distances[0].index].type === 'north') {
-        rmBoundaries[0] = 395;
-        rmBoundaries[1] = 150;
-    }
-    var j = 0;
-    while (locationConfig.regionalMap.length < 10) {///*
-        if (j >= regionalMapCities.length) {
-            return;
+    if(locationSettings.mapCities.autoFind == false){
+        for(let i = 0; i < locationSettings.mapCities.map.length; i++){
+            //console.log(locationSettings.mapCities.map[i]);
+            locationConfig.regionalMap.map[i] = locationSettings.mapCities.map[i];
         }
-        if (j > 0) {
-            if (Array.isArray(locationConfig.regionalMap[0].exclude)) {
-                for (var city in locationConfig.regionalMap[0].exclude) {
-                    if (regionalMapCities[distances[j].index].name == locationConfig.regionalMap[0].exclude[city]) {
-                        j++;
-                        console.log(locationConfig.regionalMap[0].exclude[city])
-                        continue;
+        centerMap(0, false);
+        return;
+    }else{
+        locationConfig.regionalMap.map = [];
+        distances = [];
+        for(var i = 0; i < regionalMapCities.length; i++){
+            let d = distanceByDegrees(locationConfig.mainCity, regionalMapCities[i])
+            var x = { distance: d[0], index: i, coords: [d[1], d[2]] }
+            distances.push(x);
+            //console.log(x);
+        }
+        distances.sort((a, b) => a.distance - b.distance);
+        //console.log(distances[0]);
+        centerMap(distances[0].index, locationSettings.mapCities.autoFind);
+        if (regionalMapCities[distances[0].index].type === 'pacific') {
+            rmBoundaries[2] = 415;
+            rmBoundaries[3] = 1015;
+        } else if (regionalMapCities[distances[0].index].type === 'pacific north'){
+            rmBoundaries[0] = 415;
+            rmBoundaries[1] = 170;
+            rmBoundaries[2] = 415;
+            rmBoundaries[3] = 1015;
+        } else if (regionalMapCities[distances[0].index].type === 'south'){
+            rmBoundaries[0] = 135;
+            rmBoundaries[1] = 400;
+        } else if (regionalMapCities[distances[0].index].type === 'atlantic south'){
+            rmBoundaries[0] = 135;
+            rmBoundaries[1] = 400;
+        } else if(regionalMapCities[distances[0].index].type === 'atlantic'){
+            rmBoundaries[2] = 1015;
+            rmBoundaries[3] = 415;
+        } else if (regionalMapCities[distances[0].index].type === 'atlantic north') {
+            rmBoundaries[0] = 415;
+            rmBoundaries[1] = 170;
+            rmBoundaries[2] = 1015;
+            rmBoundaries[3] = 415;
+        } else if (regionalMapCities[distances[0].index].type === 'north') {
+            rmBoundaries[0] = 395;
+            rmBoundaries[1] = 150;
+        }
+        var j = 0;
+        while (locationConfig.regionalMap.map.length < 10) {///*
+            if (j >= regionalMapCities.length) {
+                return;
+            }
+            if (j > 0) {
+                if (Array.isArray(locationConfig.regionalMap.map[0].exclude)) {
+                    for (var city in locationConfig.regionalMap.map[0].exclude) {
+                        if (regionalMapCities[distances[j].index].name == locationConfig.regionalMap.map[0].exclude[city]) {
+                            j++;
+                            console.log(locationConfig.regionalMap.map[0].exclude[city])
+                            continue;
+                        }
                     }
                 }
+                if (regionalMapCities[distances[j].index].name == locationConfig.regionalMap.map[0].exclude) {
+                    //added this exclude value to make some maps look better
+                    //or to remove cities that are off the maps in some instances 
+                    //(Cincinnati when viewing from Effingham)
+                    j++;
+                    continue;
+                }
+                if(regionalMapCities[distances[j].index].top < locationConfig.regionalMap.map[0].top - rmBoundaries[1]){
+                    j++;
+                    continue;
+                }
+                if(regionalMapCities[distances[j].index].top > locationConfig.regionalMap.map[0].top + rmBoundaries[0]){
+                    j++;
+                    continue;
+                }
+                if(regionalMapCities[distances[j].index].left < locationConfig.regionalMap.map[0].left - rmBoundaries[2]){
+                    j++;
+                    continue;
+                }
+                if(regionalMapCities[distances[j].index].left > locationConfig.regionalMap.map[0].left + rmBoundaries[3]){
+                    j++;
+                    continue;
+                }
             }
-            if (regionalMapCities[distances[j].index].name == locationConfig.regionalMap[0].exclude) {
-                //added this exclude value to make some maps look better
-                //or to remove cities that are off the maps in some instances 
-                //(Cincinnati when viewing from Effingham)
-                j++;
-                continue;
-            }
-            if(regionalMapCities[distances[j].index].top < locationConfig.regionalMap[0].top - rmBoundaries[1]){
-                j++;
-                continue;
-            }
-            if(regionalMapCities[distances[j].index].top > locationConfig.regionalMap[0].top + rmBoundaries[0]){
-                j++;
-                continue;
-            }
-            if(regionalMapCities[distances[j].index].left < locationConfig.regionalMap[0].left - rmBoundaries[2]){
-                j++;
-                continue;
-            }
-            if(regionalMapCities[distances[j].index].left > locationConfig.regionalMap[0].left + rmBoundaries[3]){
-                j++;
-                continue;
-            }
+            //*/
+            locationConfig.regionalMap.map.push(regionalMapCities[distances[j].index]);
+            j++;
         }
-        //*/
-        locationConfig.regionalMap.push(regionalMapCities[distances[j].index]);
-        j++;
+        //console.log(locationConfig.regionalMap.map);
     }
-    //console.log(locationConfig.regionalMap);
 }
 
 grabLocation().then(() =>{

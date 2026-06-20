@@ -16,7 +16,7 @@ function createMaps() {
     container: "regradar",
     projection: "mercator",
     style: mapStyle,
-    zoom: 7.2,
+    zoom: 7.7,
     center: radarCoords
   });
 
@@ -46,7 +46,7 @@ function createMaps() {
     container: "regmap",
     projection: "mercator",
     style: mapStyle,
-    zoom: 7.2,
+    zoom: 7.7,
     center: radarCoords
   });
 
@@ -76,7 +76,7 @@ function createMaps() {
     container: "regoutlines",
     projection: "mercator",
     style: mapStyle,
-    zoom: 7.2,
+    zoom: 7.7,
     center: radarCoords
   });
   regoutlines.on('load', () => {
@@ -111,7 +111,7 @@ function createMaps() {
     container: "regoutlinestrans",
     projection: "mercator",
     style: mapStyle,
-    zoom: 7.2,
+    zoom: 7.7,
     center: radarCoords
   });
   regoutlinestrans.on('load', () => {
@@ -129,8 +129,8 @@ function createMaps() {
       regoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 copy', 'visibility', 'visible');//gray roads
       regoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 (2)', 'visibility', 'none');
       regoutlinestrans.setLayoutProperty('place-label', 'visibility', 'none');
-      regoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'visible');
-      regoutlinestrans.setLayoutProperty('airport-label', 'visibility', 'visible');
+      regoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'none');
+      regoutlinestrans.setLayoutProperty('airport-label', 'visibility', 'none');
       regoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 (4)', 'visibility', 'none');
       regoutlinestrans.setLayoutProperty('country-boundaries', 'visibility', 'visible');
 
@@ -259,8 +259,8 @@ function createMaps() {
       locoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 copy', 'visibility', 'visible');//gray roads
       locoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 (2)', 'visibility', 'none');
       locoutlinestrans.setLayoutProperty('place-label', 'visibility', 'none');
-      locoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'visible');
-      locoutlinestrans.setLayoutProperty('airport-label', 'visibility', 'visible');
+      locoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'none');
+      locoutlinestrans.setLayoutProperty('airport-label', 'visibility', 'none');
       locoutlinestrans.setLayoutProperty('i2-road-vectors-conus-ak-hi-4r25d3 (4)', 'visibility', 'none');
       locoutlinestrans.setLayoutProperty('country-boundaries', 'visibility', 'visible');
 
@@ -470,9 +470,18 @@ async function startRadar(map) {
 }*/
 
 //maybe use this later?
-function stopRadar() {
+function stopRadar(map, timestamps) {
+  const layerPrefix = "radarlayer_";
   //var timestamps = map === locradar ? loctimestamps : map === regradar ? regtimestamps : sattimestamps; //map is not defined, very smart move there jenson
-  timestamps = [];
+  const validLayers = timestamps
+    .map((ts) => `${layerPrefix}${ts}`)
+    .filter((layerId) => map.getLayer(layerId));
+  const setLayerVisibility = (layerId, visibility) => {
+    if (map.getLayer(layerId)) {
+      map.setLayoutProperty(layerId, "visibility", visibility);
+    }
+  };
+  validLayers.forEach((layerId) => setLayerVisibility(layerId, "none"));
   clearInterval(radarAnimation);
 }
 
@@ -498,15 +507,35 @@ function initTrafficMap() {
   });
 }
 
-// function addRadarCities(){
-//   //soon this will be incorporated with a feature that'll turn off automatic cities
-//   //for those who make their own cities
-//   regoutlinestrans.setLayoutProperty('place-label', 'visibility', 'visible');
-//   regoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'visible');
-//   locoutlinestrans.setLayoutProperty('place-label', 'visibility', 'visible');
-//   locoutlinestrans.setLayoutProperty('place-label copy', 'visibility', 'visible');
-//   regoutlines.setLayoutProperty('place-label', 'visibility', 'visible');
-//   regoutlines.setLayoutProperty('place-label copy', 'visibility', 'visible');
-//   locoutlines.setLayoutProperty('place-label', 'visibility', 'visible');
-//   locoutlines.setLayoutProperty('place-label copy', 'visibility', 'visible');
-// }
+function addRadarCities(){
+  $(".reg-cities").empty();
+  $(".reg-cities-trans").empty();
+  $(".loc-cities").empty();
+  $(".loc-cities-trans").empty();
+  for(let i = 0; i < locationConfig.radarCities.regional.length; i++){
+    $(".reg-cities").append(`
+      <div class="radar-city ${numToWord(i)}" style="top: ${locationConfig.radarCities.regional[i].dotTopPos}px; left: ${locationConfig.radarCities.regional[i].dotLeftPos}px;">
+        <div class="dot"></div>
+        <div class="city-name" style="margin-top: ${locationConfig.radarCities.regional[i].nameTopMargin}px; margin-left: ${locationConfig.radarCities.regional[i].nameLeftMargin}px;">${locationConfig.radarCities.regional[i].locationName}</div>
+      </div>`)
+    $(".reg-cities-trans").append(`
+      <div class="radar-city ${numToWord(i)}" style="top: ${locationConfig.radarCities.regional[i].dotTopPos}px; left: ${locationConfig.radarCities.regional[i].dotLeftPos}px;">
+        <div class="dot-trans"></div>
+        <div class="dot-outline"></div>
+        <div class="city-name-trans" style="margin-top: ${locationConfig.radarCities.regional[i].nameTopMargin}px; margin-left: ${locationConfig.radarCities.regional[i].nameLeftMargin}px;">${locationConfig.radarCities.regional[i].locationName}</div>
+      </div>`)
+  }
+  for(let i = 0; i < locationConfig.radarCities.local.length; i++){
+    $(".loc-cities").append(`
+      <div class="radar-city ${numToWord(i)}" style="top: ${locationConfig.radarCities.local[i].dotTopPos}px; left: ${locationConfig.radarCities.local[i].dotLeftPos}px;">
+        <div class="dot"></div>
+        <div class="city-name" style="margin-top: ${locationConfig.radarCities.local[i].nameTopMargin}px; margin-left: ${locationConfig.radarCities.local[i].nameLeftMargin}px;">${locationConfig.radarCities.local[i].locationName}</div>
+      </div>`)
+    $(".loc-cities-trans").append(`
+      <div class="radar-city ${numToWord(i)}" style="top: ${locationConfig.radarCities.local[i].dotTopPos}px; left: ${locationConfig.radarCities.local[i].dotLeftPos}px;">
+        <div class="dot-trans"></div>
+        <div class="dot-outline"></div>
+        <div class="city-name-trans" style="margin-top: ${locationConfig.radarCities.local[i].nameTopMargin}px; margin-left: ${locationConfig.radarCities.local[i].nameLeftMargin}px;">${locationConfig.radarCities.local[i].locationName}</div>
+      </div>`)
+  }
+}

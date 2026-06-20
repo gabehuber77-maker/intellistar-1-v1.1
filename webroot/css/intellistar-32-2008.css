@@ -218,7 +218,7 @@
     background-size: cover;
     right: 0;
     top: 68px;
-    z-index: 5;
+    z-index: 10;
 }
 .satellite .banner {
     position: absolute;
@@ -237,7 +237,7 @@
     font-size: 44px;
     margin-top: 107px;
     margin-left: 878px;
-    z-index: 10;
+    z-index: 12;
 }
 .radar .key, .satellite .key {
     position: absolute;
@@ -247,7 +247,7 @@
     transform: scaleY(0.91);
     margin-top: 170px;
     margin-left: 135px;
-    z-index: 10;
+    z-index: 12;
 }
 .satellite .key {
     margin-top: 155px;
@@ -262,7 +262,7 @@
     margin-left: 11px;
 }
 .radar .header {
-    z-index: 6;
+    z-index: 11;
     left: 20px;
 }
 .satellite .header {
@@ -275,7 +275,7 @@
     width: 1620px;
     height: 1080px;
     filter: drop-shadow(12px 8px 0px #000);
-    z-index: 2;
+    z-index: 6;
 }
 #regradar {
     filter: drop-shadow(6px 4px 0px #000) !important;
@@ -295,7 +295,7 @@
     position: absolute;
     width: 1620px;
     height: 1080px;
-    z-index: 3;
+    z-index: 6;
 }
 
 .current-conditions .city-name {
@@ -1027,6 +1027,11 @@
 }
 .map-cities .city {
     position: absolute;
+    width: 272px;
+    height: 216px;
+}
+.map-cities .city.selected {
+    background-color: #6a9eff7f;
 }
 .city .city-name {
     position: absolute;
@@ -1051,4 +1056,31 @@
     height: 158px;
     margin-top: 51px;
     margin-left: 104px;
+}
+
+.reg-cities, .loc-cities {
+    position: absolute;
+    z-index: 5;
+}
+.reg-cities-trans, .loc-cities-trans {
+    position: absolute;
+    z-index: 7;
+}
+.dot, .dot-trans, .dot-outline {
+    height: 35px;
+    width: 35px;
+    position: absolute;
+}
+.radar-city {
+    position: absolute;
+}
+.radar-city .city-name, .radar-city .city-name-trans {
+    font-family: "Interstate Bold";
+    font-size: 40px;
+    position: absolute;
+    color: rgba(212,212,212,1);
+    transform: scaleY(0.91);
+}
+.radar-city .city-name-trans {
+    opacity: 0.7;
 }

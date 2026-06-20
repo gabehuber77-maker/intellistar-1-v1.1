@@ -5,11 +5,11 @@
     "cors": "node ./webroot/js/cors.js",
     "http-server": "http-server ./webroot",
     "dev-server": "live-server ./webroot",
-    "start": "npm-run-all --parallel cors dev-server"
+    "start": "node app.js"
   },
   "dependencies": {
-    "cors-anywhere": "^0.4.4",
     "date-fns": "^2.23.0",
+    "express": "^5.2.1",
     "fs": "^0.0.1-security",
     "http-server": "^14.1.0",
     "live-server": "^1.1.0",

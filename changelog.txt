@@ -1,4 +1,9 @@
 Make sure to report any bugs or issues in the Issues tab!
+= JUNE 20, 2026 | VERSION 1.1 =
+ -  Advance map settings added, currently in beta mode
+ -  Alert crawl bug fixes
+ -  ExpressJS conversion
+ -  Changed radar cities method
 = MARCH 13, 2026 | VERSION 1.02 =
  -  Major settings panel fixes/rewrite
  -  Loading options are now available

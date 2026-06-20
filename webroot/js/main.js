@@ -11,7 +11,7 @@ $(function(){
 		var scale, windowAspect;
 
 		windowAspect = $window.width() / $window.height();
-		if (windowAspect>=appearanceSettings.aspectRatio) {
+		if (windowAspect>=(3/2)) {
 			scale = $window.height() / mainHeight;
 		} else {
 			scale = $window.width() / mainWidth;

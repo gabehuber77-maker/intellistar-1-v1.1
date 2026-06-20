@@ -5,13 +5,11 @@ var traf_key = 'YOUR_TRAFFIC_KEY';
 var appearanceSettings = {
     marqueeAd: ["network"],
     localWeatherID: "XXXXX", //Keep it at XXXXX to generate a random local weather ID. Otherwise, put a 5 digit number.
-    aspectRatio: 3/2, //For native resolution, use 3/2. For TV native resolution, use 4/3. There are no other aspect ratio options. Default is 3/2. 
-    // ^ 4/3 is not yet supported.
-    iconSet: "2007", //I highly recommend you do not change this value unless you are more experienced. If you do, the sim will look for a file called icons(value)sprite.png.
+    iconSet: "2007", //I highly recommend you do not change this value unless you are more experienced. If you do, the sim will look for a folder after what you set this too.
     ldlType: 'both', //what you want to see on ldl. 'observations' = only observations / 'both' = both / if anything else is put here, the sim will default to only observations
     startupTime: 4000, //How long you want to wait for it to start up.
     graphicsPackage: 2008, //the package for graphics. 2007 will have blue text, while 2008 will have black text.
-    version: "1.02"
+    version: "1.1"
 }
 
 var slideSettings = {
@@ -122,14 +120,24 @@ var locationSettings = {/*This is what you can edit, anything under the lcationS
     },
     mapCities: {
         autoFind: true,
-        mapPosition: {left: "", top: ""}, //center of the map, leave blank if you are using autoFind. Example: {left: "-3030px", top: "600px"}
+        leftPos: "",
+        topPos: "", //center of the map, leave blank if you are using autoFind. Example: {left: "-3030px", top: "600px"}
         cities: [
             {
                 name: "",
                 type: "",
                 val: "",
-                pos: {left: "", top: ""} //where the city will be positioned. Example: {left: "414px", top: "313px"}
+                left: "",
+                top: "" //where the city will be positioned. Example: left: "414px", top: "313px"
             },
         ]
+    },
+    radarCities: {
+        local: [
+            //similar to weatherscan's, just a temp thing to solve the cities issue right now (no city name/label)
+            {locationName:"",dotTopPos:"",dotLeftPos:"",nameTopMargin:"",nameLeftMargin:""}
+        ],
+        regional: [
+        ],
     }
 }

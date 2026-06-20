@@ -81,6 +81,43 @@
     <div id="blackscreen" class="container"
         style="position: absolute; z-index: 2000; background-color: black; display: none;"></div>
     <div id="main">
+        <div id="map-interactive-settings" style="display: none;">
+            <button class="backbuttonmap" onclick="mapSettingsExit()" style="pointer-events: all;">Back</button>
+            <div class="map-coords">
+                <div class="titl">Map:</div>
+                <div class="left">Left:</div>
+                <input id="mapleftvalue" type="text" autocomplete="off">
+                <div class="top">Top:</div>
+                <input id="maptopvalue" type="text" autocomplete="off">
+                <div class="map-rules">
+                    Left box: A - D
+                    Top box: W - S
+                </div>
+            </div>
+            <div class="city-stuff">
+                <div class="city-titl">Cities:</div>
+                <select id="citydropvalue">
+                    <option value="N"> </option>
+                </select>
+                <div class="city-properties" style="display: none;">
+                    <div class="city-name"></div>
+                    <div class="left">Left:</div>
+                    <input id="cityleftvalue" type="text" autocomplete="off">
+                    <div class="top">Top:</div>
+                    <input id="citytopvalue" type="text" autocomplete="off">
+                    <div class="map-rules">
+                        Left box: A - D
+                        Top box: W - S
+                    </div>
+                    <div class="search-query">Search:</div>
+                    <input id="searchcityvalue" type="text" autocomplete="off">
+                    <div class="map-city-settings">
+                        <button id="remove-mc" onclick="removeMapCity()"><div>-</div></button>
+                        <button id="search-c" onclick="searchMapCity()"><div style="background-image: url(images/settings/search.png);"></div></button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="background"></div>
         <div class="slides">
             <div class="current-conditions" style="display: none;">
@@ -102,7 +139,7 @@
                     <div class="pressure">
                         <div class="data"></div>
                         <div class="inches">INCHES</div>
-                        <div class="trend">S</div>
+                        <div class="trend"></div>
                     </div>
                     <div class="visibility">
                         <div class="data"></div>
@@ -324,13 +361,19 @@
                 <div id="locmap" style="display:none;"></div>
                 <div id="locoutlines" style="display:none;"></div>
                 <div id="locoutlinestrans" style="display:none;"></div>
-                <div id="loccities" style="display:none; opacity: 0.5;"></div>
+                <div class="loc-cities" style="display:none;">
+                </div>
+                <div class="loc-cities-trans" style="display:none;">
+                </div>
 
                 <div id="regradar" style="display:none;"></div>
                 <div id="regmap" style="display:none;"></div>
                 <div id="regoutlines" style="display:none;"></div>
                 <div id="regoutlinestrans" style="display:none;"></div>
-                <div id="regcities" style="display:none; opacity: 0.5;"></div>
+                <div class="reg-cities" style="display: none;">
+                </div>
+                <div class="reg-cities-trans" style="display: none;">
+                </div>
             </div>
             <div class="satellite" style="display: none;">
                 <div class="header">Radar Satellite</div>
@@ -680,15 +723,8 @@
                 <input id="locloadconfiginput" type="file" accept="application/json"
                     style="opacity: 0; cursor: pointer;" onchange="jsonFuncs()">
             </div>
+            <div id="map-interactive" title="Advanced Map Settings (BETA)"></div>
         </div>
-        <!-- <div id="moreflavor" class="changecolor" style="color: #171717; display: none;">
-            <div class="box" style="display: none;"></div>
-            <div class="boxheader changecolor" style="color: #171717;">ADVANCED FLAVOR SETTINGS</div>
-            <div class="moreflavortext">Advanced flavor settings will be released at a later date!</div>
-            <button id="backbutton" onclick="changeSlide('moreflavor', 'basic')">
-                <div>Back</div>
-            </button>
-        </div> -->
     </div>
 </body>
 

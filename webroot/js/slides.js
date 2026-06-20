@@ -280,6 +280,9 @@ var slidePrograms = {
         if(mapStyle == "mapbox://styles/colster/cmiccqynn00as01s4bt6501il"){
             $('#regoutlines').fadeIn(0);
             $('#regoutlinestrans').fadeIn(0);
+            addRadarCities();
+            $(".reg-cities").fadeIn(0);
+            $(".reg-cities-trans").fadeIn(0);
         }
         regmap.resize();
         regradar.resize();
@@ -289,6 +292,8 @@ var slidePrograms = {
         startRadar(regradar);
 
         setTimeout(() => {
+            $(".reg-cities").fadeOut(0);
+            $(".reg-cities-trans").fadeOut(0);
             $('.radar .header').fadeOut(0);
             clearInterval(radarAnimation);
             $('.radar').fadeOut(0);
@@ -306,6 +311,8 @@ var slidePrograms = {
         if(mapStyle == "mapbox://styles/colster/cmiccqynn00as01s4bt6501il"){
             $('#locoutlines').fadeIn(0);
             $('#locoutlinestrans').fadeIn(0);
+            $(".loc-cities").fadeIn(0);
+            $(".loc-cities-trans").fadeIn(0);
         }
         locmap.resize();
         locradar.resize();
@@ -316,6 +323,8 @@ var slidePrograms = {
         startRadar(locradar);
 
         setTimeout(() => {
+            $(".loc-cities").fadeOut(0);
+            $(".loc-cities-trans").fadeOut(0);
             clearInterval(radarAnimation);
             $('.radar').fadeOut(0);
             $('#locradar').fadeOut(0);
@@ -388,10 +397,10 @@ var slidePrograms = {
     mapTest() {
         $('.map').fadeIn(0);
         var mapDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
-        for (let i = 0; i < locationConfig.regionalMap.length; i++) {
+        for (let i = 0; i < locationConfig.regionalMap.map.length; i++) {
             $(`.map-cities .city.${mapDivs[i]}`).fadeIn(0);
-            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap[i].name)
-            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap[i].left, top: locationConfig.regionalMap[i].top })
+            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap.map[i].name)
+            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap.map[i].left, top: locationConfig.regionalMap.map[i].top })
         }
     },
     mapCurrent() {
@@ -399,10 +408,10 @@ var slidePrograms = {
         $('.map .header').text("Now");
         $('.map .header').fadeIn(167, 'linear');
         var mapDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
-        for (let i = 0; i < locationConfig.regionalMap.length; i++) {
+        for (let i = 0; i < locationConfig.regionalMap.map.length; i++) {
             $(`.map-cities .city.${mapDivs[i]}`).fadeIn(0);
-            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap[i].name);
-            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap[i].left, top: locationConfig.regionalMap[i].top });
+            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap.map[i].name);
+            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap.map[i].left, top: locationConfig.regionalMap.map[i].top });
             $(`.map-cities .city.${mapDivs[i]} .temp`).text(weatherInfo.map.mapCities[i].current.temp);
             getIcon($(`.map-cities .city.${mapDivs[i]} .icon`), weatherInfo.map.mapCities[i].current.icon, "current", "large");
         }
@@ -421,10 +430,10 @@ var slidePrograms = {
         $('.map .header').text(`${weatherInfo.map.days[midx]}'s Forecast`);
         $('.map .header').fadeIn(167, 'linear');
         var mapDivs = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
-        for (let i = 0; i < locationConfig.regionalMap.length; i++) {
+        for (let i = 0; i < locationConfig.regionalMap.map.length; i++) {
             $(`.map-cities .city.${mapDivs[i]}`).fadeIn((midx == 0 ? 0 : 167), 'linear');
-            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap[i].name);
-            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap[i].left, top: locationConfig.regionalMap[i].top });
+            $(`.map-cities .city.${mapDivs[i]} .city-name`).text(locationConfig.regionalMap.map[i].name);
+            $(`.map-cities .city.${mapDivs[i]}`).css({ left: locationConfig.regionalMap.map[i].left, top: locationConfig.regionalMap.map[i].top });
             $(`.map-cities .city.${mapDivs[i]} .temp`).text(weatherInfo.map.mapCities[i].forecasts[midx].temp);
             getIcon($(`.map-cities .city.${mapDivs[i]} .icon`), weatherInfo.map.mapCities[i].forecasts[midx].icon, "forecast", "large");
         }
@@ -445,7 +454,7 @@ var slidePrograms = {
                     }, 167);
                 } else {
                     $('.map .header').fadeOut(167, 'linear');
-                    for (let i = 0; i < locationConfig.regionalMap.length; i++) {
+                    for (let i = 0; i < locationConfig.regionalMap.map.length; i++) {
                         $(`.map-cities .city.${mapDivs[i]}`).fadeOut(167);
                     }
                     setTimeout(() => {

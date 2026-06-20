@@ -377,8 +377,8 @@ var codeToCurrent = {
     4490: { iconFile: 'Fog', textModifier: 'Unknown Precipitation/ Fog' },
 }
 var codetoFcst = {
-    300: { iconFile: 'StrTs', textModifier: "Strong T'storms", mov: "heavy_thunderstorms" },
-    310: { iconFile: 'StrTs', textModifier: "Strong T'storms / Wind", mov: "heavy_thunderstorms" },
+    300: { iconFile: 'Tss', textModifier: "Strong T'storms", mov: "heavy_thunderstorms" },
+    310: { iconFile: 'Tss', textModifier: "Strong T'storms / Wind", mov: "heavy_thunderstorms" },
     400: { iconFile: 'Tss', textModifier: "T'storms", mov: "thunderstorms" },
     402: { iconFile: 'Tss', textModifier: "Heavy T'storms", mov: "heavy_thunderstorms" },
     410: { iconFile: 'Tss', textModifier: "T'storms / Wind", mov: "thunderstorms" },
@@ -637,8 +637,8 @@ var codetoFcst = {
     7911: { iconFile: 'LtSn', textModifier: 'Light Snow / Wind Late', mov: "light_snow" },
     7913: { iconFile: 'PMSn', textModifier: 'PM Snow / Wind', mov: "light_snow" },
     7914: { iconFile: 'PMSnSh', textModifier: 'PM Light Snow / Wind', mov: "light_snow" },
-    8000: { iconFile: 'RaToSn', textModifier: 'Rain to Snow', mov: "rain_snow" },
-    8010: { iconFile: 'RaToSn', textModifier: 'Rain to Snow / Wind', mov: "rain_snow" },
+    8000: { iconFile: 'RaSn', textModifier: 'Rain to Snow', mov: "rain_snow" },
+    8010: { iconFile: 'RaSn', textModifier: 'Rain to Snow / Wind', mov: "rain_snow" },
     8100: { iconFile: 'RaFrzRa', textModifier: 'Rain to Ice', mov: "rain_snow" },
     8110: { iconFile: 'RaFrzRa', textModifier: 'Rain to Ice / Wind', mov: "rain_snow" },
     8200: { iconFile: 'SnToRa', textModifier: 'Snow to Rain', mov: "rain_snow" },
@@ -665,16 +665,130 @@ var codetoFcst = {
     9103: { iconFile: 'AMFgPMSu', textModifier: 'AM Fog / PM Sun', mov: "fog" },
     9110: { iconFile: 'Fog', textModifier: 'Fog Early / Clearing Late / Wind', mov: "fog" },
     9113: { iconFile: 'AMFgPMSu', textModifier: 'AM Fog / PM Sun / Wind', mov: "fog" },
-    9200: { iconFile: 'AMFgPMCl', textModifier: 'Fog Early / Clouds Late', mov: "fog" },
-    9203: { iconFile: 'AMFgPMCl', textModifier: 'AM Fog / PM Clouds', mov: "fog" },
-    9210: { iconFile: 'AMFgPMCl', textModifier: 'Fog Early / Clouds Late / Wind', mov: "fog" },
-    9213: { iconFile: 'AMFgPMCl', textModifier: 'AM Fog / PM Clouds / Wind', mov: "fog" },
+    9200: { iconFile: 'Fog', textModifier: 'Fog Early / Clouds Late', mov: "fog" },
+    9203: { iconFile: 'Fog', textModifier: 'AM Fog / PM Clouds', mov: "fog" },
+    9210: { iconFile: 'Fog', textModifier: 'Fog Early / Clouds Late / Wind', mov: "fog" },
+    9213: { iconFile: 'Fog', textModifier: 'AM Fog / PM Clouds / Wind', mov: "fog" },
     9300: { iconFile: 'Fog', textModifier: 'Fog Late', mov: "fog" },
     9303: { iconFile: 'Fog', textModifier: 'PM Fog', mov: "fog" },
     9310: { iconFile: 'Fog', textModifier: 'Fog / Wind Late', mov: "fog" },
     9313: { iconFile: 'Fog', textModifier: 'PM Fog / Wind', mov: "fog" },
     9500: { iconFile: 'Mix', textModifier: 'Rain to Wintry Mix', mov: "wintry_mix" },
     9510: { iconFile: 'Mix', textModifier: 'Rain to Wintry Mix / Wind', mov: "wintry_mix" },
+}
+var warningSettings = {
+		"Tsunami Warning": {priority:1, severe:false, color: 'red', included:true, marine:false},
+		"Tornado Warning": {priority:2, severe:true, color: 'red', included:true, marine:false},
+		"Extreme Wind Warning": {priority:3, severe:false, color: 'red', included:false, marine:false},
+		"Severe Thunderstorm Warning": {priority:4, severe:true, color: 'red', included:true, marine:false},
+		"Flash Flood Warning": {priority:5, severe:true, color: 'red', included:true, marine:false},
+		"Flash Flood Statement": {priority:6, severe:false, color: 'orange', included:true, marine:false},
+		"Severe Weather Statement":	{priority:7, severe:false, color: 'orange', included:true, marine:false},
+		"Fire Warning":	{priority:14, severe:false, color: 'orange', included:true, marine:false},
+		"Storm Surge Warning": {priority:17, severe:false, color: 'orange', included:false, marine:false},
+		"Hurricane Force Wind Warning": {priority:18, severe:false, color: 'orange', included:false, marine:false},
+		"Hurricane Warning": {priority:19, severe:false, color: 'orange', included:true, marine:false},
+		"Typhoon Warning": {priority:20, severe:false, color: 'orange', included:true, marine:true},
+		"Special Marine Warning": {priority:21, severe:false, color: 'orange', included: false, marine:true},
+		"Blizzard Warning":	{priority:22, severe:false, color: 'orange', included: true, marine:false},
+		"Snow Squall Warning": {priority:23, severe:false, color: 'orange', included: false, marine:false},
+		"Ice Storm Warning": {priority:24, severe:false, color: 'orange', included: false, marine:false},
+		"Winter Storm Warning": {priority:25, severe:false, color: 'orange', included: true, marine:false},
+		"High Wind Warning": {priority:26, severe:false, color: 'orange', included: true, marine:false},
+		"Tropical Storm Warning": {priority:27, severe:false, color: 'orange', included: true, marine:false},
+		"Storm Warning": {priority:28, severe:false, color: 'orange', included: false, marine:false},
+		"Tsunami Advisory": {priority:29, severe:false, color: 'orange', included: false, marine:false},
+		"Tsunami Watch": {priority:30, severe:false, color: 'orange', included: false, marine:false},
+		"Avalanche Warning": {priority:31, severe:false, color: 'orange', included: true, marine:false},
+		"Earthquake Warning": {priority:32, severe:false, color: 'orange', included: true, marine:false},
+		"Volcano Warning": {priority:33, severe:false, color: 'orange', included: true, marine:false},
+		"Ashfall Warning": {priority:34, severe:false, color: 'orange', included: true, marine:false},
+		"Coastal Flood Warning": {priority:35, severe:false, color: 'orange', included: true, marine:false},
+		"Lakeshore Flood Warning": {priority:36, severe:false, color: 'orange', included: true, marine:false},
+		"Flood Warning": {priority:37, severe:false, color: 'orange', included: true, marine:false},
+		"River Flood Warning": {priority:37.5, severe:false, color: 'orange', included: false, marine:false},
+		"High Surf Warning": {priority:38, severe:false, color: 'orange', included: false, marine:false},
+		"Dust Storm Warning": {priority:39, severe:false, color: 'orange', included: true, marine:false},
+		"Blowing Dust Warning": {priority:40, severe:false, color: 'orange', included: false, marine:false},
+		"Lake Effect Snow Warning": {priority:41, severe:false, color: 'orange', included: true, marine:false},
+		"Extreme Heat Warning": {priority:42, severe:false, color: 'orange', included: true, marine:false},
+		"Tornado Watch": {priority:43, severe:false, color: 'red', included: true, marine:false},
+		"Severe Thunderstorm Watch": {priority:44, severe:false, color: 'yellow', included: true, marine:false},
+		"Flash Flood Watch": {priority:45, severe:false, color: 'orange', included: true, marine:false},
+		"Gale Warning":	{priority:46, severe:false, color: 'orange', included: false, marine:true},
+		"Flood Statement": {priority:47, severe:false, color: 'orange', included: false, marine:false},
+		"Wind Chill Warning":	{priority:48, severe:false, color: 'orange', included: true, marine:false},
+		"Extreme Cold Warning": {priority:49, severe:false, color: 'orange', included: true, marine:false},
+		"Hard Freeze Warning": {priority:50, severe:false, color: 'orange', included: true, marine:false},
+		"Freeze Warning": {priority:51, severe:false, color: 'orange', included: true, marine:false},
+		"Red Flag Warning":	{priority:52, severe:false, color: 'orange', included: false, marine:false},
+		"Storm Surge Watch": {priority:53, severe:false, color: 'orange', included: false, marine:false},
+		"Hurricane Watch": {priority:54, severe:false, color: 'orange', included: true, marine:false},
+		"Hurricane Force Wind Watch": {priority:55, severe:false, color: 'orange', included: false, marine:false},
+		"Typhoon Watch": {priority:56, severe:false, color: 'orange', included: false, marine:true},
+		"Tropical Storm Watch": {priority:57, severe:false, color: 'orange', included: true, marine:false},
+		"Storm Watch": {priority:49, severe:false, color: 'orange', included: false, marine:false},
+		"Hurricane Local Statement": {priority:59, severe:false, color: 'orange', included: true, marine:false},
+		"Typhoon Local Statement": {priority:60, severe:false, color: 'orange', included: false, marine:false},
+		"Tropical Storm Local Statement": {priority:61, severe:false, color: 'orange', included: true, marine:false},
+		"Tropical Depression Local Statement": {priority:62, severe:false, color: 'orange', included: true, marine:false},
+		"Avalanche Advisory":	{priority:63, severe:false, color: 'orange', included: true, marine:false},
+		"Winter Weather Advisory": {priority:64, severe:false, color: 'orange', included: true, marine:false},
+		"Cold Weather Advisory": {priority:65, severe:false, color: 'orange', included: true, marine:false},
+		"Heat Advisory": {priority:66, severe:false, color: 'orange', included: true, marine:false},
+		"Urban and Small Stream Flood Advisory": {priority:67, severe:false, color: 'orange', included: false, marine:false},
+		"Small Stream Flood Advisory": {priority:68, severe:false, color: 'orange', included: false, marine:false},
+		"Arroyo and Small Stream Flood Advisory":	{priority:69, severe:false, color: 'orange', included: false, marine:false},
+		"Flood Advisory":	{priority:70, severe:false, color: 'orange', included: true, marine:false},
+		"Hydrologic Advisory": {priority:71, severe:false, color: 'orange', included: false, marine:false},
+		"Lakeshore Flood Advisory": {priority:72, severe:false, color: 'orange', included: true, marine:false},
+		"Coastal Flood Advisory": {priority:73, severe:false, color: 'orange', included: true, marine:false},
+		"High Surf Advisory":	{priority:74, severe:false, color: 'orange', included: true, marine:false},
+		"Heavy Freezing Spray Warning":	{priority:75, severe:false, color: 'orange', included: false, marine:true},
+		"Dense Fog Advisory":	{priority:76, severe:false, color: 'orange', included: true, marine:false},
+		"Dense Smoke Advisory":	{priority:77, severe:false, color: 'orange', included: true, marine:false},
+		"Small Craft Advisory For Hazardous Seas": {priority:78, severe:false, color: 'orange', included: false, marine:true},
+		"Small Craft Advisory for Rough Bar":	{priority:79, severe:false, color: 'orange', included: false, marine:true},
+		"Small Craft Advisory for Winds":	{priority:80, severe:false, color: 'orange', included: false, marine:true},
+		"Small Craft Advisory": {priority:81, severe:false, color: 'orange', included: false, marine:true},
+		"Brisk Wind Advisory": {priority:82, severe:false, color: 'orange', included: false, marine:true},
+		"Hazardous Seas Warning":	{priority:83, severe:false, color: 'orange', included: false, marine:true},
+		"Dust Advisory": {priority:84, severe:false, color: 'orange', included: true, marine:false},
+		"Blowing Dust Advisory": {priority:85, severe:false, color: 'orange', included: true, marine:false},
+		"Lake Wind Advisory":	{priority: 86, severe:false, color: 'orange', included: true, marine:false},
+		"Wind Advisory": {priority: 87, severe:false, color: 'orange', included: true, marine:false},
+		"Frost Advisory":	{priority:88, severe:false, color: 'orange', included: true, marine:false},
+		"Ashfall Advisory":	{priority:89, severe:false, color: 'orange', included: true, marine:false},
+		"Freezing Fog Advisory": {priority:90, severe:false, color: 'orange', included: true, marine:false},
+		"Freezing Spray Advisory": {priority:91, severe:false, color: 'orange', included: false, marine:true},
+		"Low Water Advisory": {priority:92, severe:false, color: 'orange', included: false, marine:false},
+		"Avalanche Watch": {priority:94, severe:false, color: 'orange', included: true, marine:false},
+		"Blizzard Watch": {priority:95, severe:false, color: 'orange', included: true, marine:false},
+		"Rip Current Statement": {priority:96, severe:false, color: 'orange', included: false, marine:true},
+		"Beach Hazards Statement": {priority:97, severe:false, color: 'orange', included: false, marine:true},
+		"Gale Watch": {priority:98, severe:false, color: 'orange', included: false, marine:true},
+		"Winter Storm Watch":	{priority:99, severe:false, color: 'orange', included: true, marine:false},
+		"Hazardous Seas Watch":	{priority:100, severe:false, color: 'orange', included: false, marine:true},
+		"Heavy Freezing Spray Watch": {priority:101, severe:false, color: 'orange', included: false, marine:true},
+		"Coastal Flood Watch": {priority:102, severe:false, color: 'orange', included: true, marine:false},
+		"Lakeshore Flood Watch": {priority:103, severe:false, color: 'orange', included: true, marine:false},
+		"Flood Watch": {priority:103, severe:false, color: 'orange', included: true, marine:false},
+		"High Wind Watch": {priority:105, severe:false, color: 'orange', included: true, marine:false},
+		"Extreme Heat Watch":	{priority:106, severe:false, color: 'orange', included: true, marine:false},
+		"Extreme Cold Watch":	{priority:107, severe:false, color: 'orange', included: true, marine:false},
+		"Wind Chill Watch":	{priority:108, severe:false, color: 'orange', included: true, marine:false},
+		"Lake Effect Snow Watch":	{priority:109, severe:false, color: 'orange', included: true, marine:false},
+		"Hard Freeze Watch": {priority:110, severe:false, color: 'orange', included: true, marine:false},
+		"Freeze Watch":	{priority:111, severe:false, color: 'orange', included: true, marine:false},
+		"Fire Weather Watch":	{priority:112, severe:false, color: 'orange', included: true, marine:false},
+		"Extreme Fire Danger": {priority:113, severe:false, color: 'orange', included: true, marine:false},
+		"Coastal Flood Statement": {priority:115, severe:false, color: 'orange', included: true, marine:false},
+		"Lakeshore Flood Statement": {priority:116, severe:false, color: 'orange', included: true, marine:false},
+		"Special Weather Statement": {priority:117, severe:false, color: 'orange', included: true, marine:false},
+		"Marine Weather Statement":	{priority:102, severe:false, color: 'orange', included: false, marine:true},
+		"Air Quality Alert": {priority:119, severe:false, color: 'orange', included: false, marine:false},
+		"Air Stagnation Advisory": {priority:120, severe:false, color: 'orange', included: true, marine:false},
+		"Hazardous Weather Outlook":	{priority:121, severe:false, color: 'orange', included: false, marine:false},
 }
 //  Fisher-Yates shuffle
 function shuffle(array) {
@@ -718,6 +832,48 @@ function fadeSlideOut(div, time, moveon, delay) {
             }, time);
         }
     }, delay);
+}
+
+function numToWord(num) {
+  const words = {
+    0: 'zero',
+    1: 'one',
+    2: 'two',
+    3: 'three',
+    4: 'four',
+    5: 'five',
+    6: 'six',
+    7: 'seven',
+    8: 'eight',
+    9: 'nine',
+    10: 'ten',
+    11: 'eleven',
+    12: 'twelve',
+    13: 'thirteen',
+    14: 'fourteen',
+    15: 'fifteen',
+    16: 'sixteen',
+    17: 'seventeen',
+    18: 'eighteen',
+    19: 'nineteen',
+    20: 'twenty',
+    30: 'thirty',
+    40: 'forty',
+    50: 'fifty',
+    60: 'sixty',
+    70: 'seventy',
+    80: 'eighty',
+    90: 'ninety'
+  };
+  if (num >= 0 && num <= 20) {
+    return words[num];
+  } else if (num < 100) {
+    const tens = Math.floor(num / 10) * 10;
+    const ones = num % 10;
+    return words[tens] + (ones ? '-' + words[ones] : '');
+  } else {
+    return 'NaN';
+  }
 }
 
 function getIcon(div, iconCode, type, size) {
@@ -832,9 +988,9 @@ function isSevere(alertTitle) {
     }
 }
 function crawlType(alertTitle) {
-    if (alertTitle == "Tornado Warning" || alertTitle == "Flash Flood Warning" || alertTitle == "Severe Thunderstorm Warning" || alertTitle == "Tornado Watch") {
+    if (warningSettings[alertTitle].color == "red") {
         return "Warning";
-    } else if (alertTitle == "Severe Thunderstorm Watch") {
+    } else if (warningSettings[alertTitle].color == "yellow") {
         return "Advisory";
     } else {
         return "Advisory";
@@ -893,34 +1049,44 @@ function distanceByDegrees(c1, c2) {
     return [Math.sqrt(dLat ** 2 + dLon ** 2), dLat, dLon];
 }
 
-function centerMap(idx) {
-    var lft = 720, tp = 430;
-    if (regionalMapCities[idx].type == 'pacific') {
-        lft = 420;
-    } else if (regionalMapCities[idx].type == 'pacific north') {
-        lft = 420;
-        tp = 230;
-    } else if (regionalMapCities[idx].type == 'south') {
-        tp = 530;
-    } else if (regionalMapCities[idx].type == 'atlantic south') {
-        lft = 870;
-        tp = 530;
-    } else if (regionalMapCities[idx].type == 'atlantic') {
-        lft = 1020;
-    } else if (regionalMapCities[idx].type == 'atlantic north') {
-        lft = 1020;
-        tp = 230;
-    } else if (regionalMapCities[idx].type == 'north') {
-        tp = 230;
+function centerMap(idx, autoFind) {
+    if(autoFind == false){
+        $(".map-regional").css({
+            left: locationConfig.regionalMap.leftPos + "px",
+            top: locationConfig.regionalMap.topPos + "px"
+        });
+        $(".map-cities").css({left: '', top: ''});
+    }else{
+        var lft = 720, tp = 430;
+        if (regionalMapCities[idx].type == 'pacific') {
+            lft = 420;
+        } else if (regionalMapCities[idx].type == 'pacific north') {
+            lft = 420;
+            tp = 230;
+        } else if (regionalMapCities[idx].type == 'south') {
+            tp = 530;
+        } else if (regionalMapCities[idx].type == 'atlantic south') {
+            lft = 870;
+            tp = 530;
+        } else if (regionalMapCities[idx].type == 'atlantic') {
+            lft = 1020;
+        } else if (regionalMapCities[idx].type == 'atlantic north') {
+            lft = 1020;
+            tp = 230;
+        } else if (regionalMapCities[idx].type == 'north') {
+            tp = 230;
+        }
+        $(".map-regional").css({
+            left: `${-(regionalMapCities[idx].left) + lft}px`,
+            top: `${-(regionalMapCities[idx].top) + tp}px`
+        });
+        $(".map-cities").css({
+            left: `${-(regionalMapCities[idx].left) + lft}px`,
+            top: `${-(regionalMapCities[idx].top) + tp}px`
+        });
+        locationConfig.regionalMap.leftPos = -(regionalMapCities[idx].left) + lft;
+        locationConfig.regionalMap.topPos = -(regionalMapCities[idx].top) + tp;
     }
-    $(".map-regional").css({
-        left: `${-(regionalMapCities[idx].left) + lft}px`,
-        top: `${-(regionalMapCities[idx].top) + tp}px`
-    });
-    $(".map-cities").css({
-        left: `${-(regionalMapCities[idx].left) + lft}px`,
-        top: `${-(regionalMapCities[idx].top) + tp}px`
-    });
 }
 
 //REGIONAL MAP CITIES

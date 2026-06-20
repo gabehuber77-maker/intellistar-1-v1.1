@@ -98,6 +98,19 @@ document.addEventListener('DOMContentLoaded', () =>{
                 locationSearch('advlocsearchlookup')
             }
         })
+
+    document.getElementById("map-interactive")
+        .addEventListener("click", () => {
+            mapSettings();
+        })
+    
+    // createMaps();
+    // initializeRadar(regradar).then(() =>{
+    //     startRadar(regradar).then(() =>{
+    //         setTimeout(() =>{stopRadar(regradar, regtimestamps)},10000);
+    //     });
+    // });
+    // initializeRadar(locradar);
 })
 
 /**
@@ -110,11 +123,13 @@ document.addEventListener('DOMContentLoaded', () =>{
 function changeSlide(id1, id2, callback){
     $(`#${id1} .box`).fadeOut(333, 'linear', function(){
         $(`#${id1}`).fadeOut(0, function(){
-            $(`#${id2}`).fadeIn(0);
-            $(`#${id2} .box`).fadeIn(333, 'linear');
+            if(id2 != ""){
+                $(`#${id2}`).fadeIn(0);
+                $(`#${id2} .box`).fadeIn(333, 'linear');
+            }
+            if(callback){callback()}
         });
     })
-    if(callback){callback()}
 }
 
 var locNameInterval, dataGrabInterval;
@@ -146,6 +161,7 @@ function onLocationInit(){
 
 async function startProgram() {
     inSettings = false;
+    $("#map-interactive-settings").css('pointer-events', 'none')
     $("#settings-menu").fadeOut(0);
     $("#blackscreen").fadeIn(0);
     setTimeout(() => {
@@ -392,4 +408,310 @@ function loadLocationCookies(){
             }, 2500);
         }, 500);
     }, 500);
+}
+
+var inMapBefore = false;
+var currentMapIdx = '';
+var mapDivs = ["i","ii","iii","iv","v","vi","vii","viii","ix","x"]
+function mapSettings(){
+    changeSlide('morelocation', '', function(){
+        $("#citydropvalue").html("<option value=\"N\"> </option>");
+        $(".map-cities .city." + mapDivs[currentMapIdx]).removeClass("selected");
+        $(".city-properties").fadeOut(0);
+        $("#settings-menu").fadeOut(0);
+        slidePrograms.mapTest();
+        $("#map-interactive-settings").fadeIn(0);
+        document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+        document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+        if(!inMapBefore){
+            $(".map-cities").css({'left':'','top':''});
+            if(locationSettings.mapCities.autoFind == true){
+                $(".map-cities .city").each((index, element) =>{
+                    // console.log(index, element);
+                    var oldLeft = Number($(element).css('left').split("px")[0]), oldTop = Number($(element).css('top').split("px")[0]);
+                    // console.log(Number($(element).css('left').split("px")[0]), Number($(element).css('top').split("px")[0]))
+                    $(element).css({
+                        'left': oldLeft + locationConfig.regionalMap.leftPos,
+                        'top': oldTop + locationConfig.regionalMap.topPos
+                    })
+                    locationConfig.regionalMap.map[index].left = oldLeft + locationConfig.regionalMap.leftPos;
+                    locationConfig.regionalMap.map[index].top = oldTop + locationConfig.regionalMap.topPos;
+                    //$(element).addClass("selected");
+                })
+            }
+        }
+        $(".map-cities .city").each((index) =>{
+            if(locationConfig.regionalMap.map.length > index){
+                $("#citydropvalue").append(`<option value=${index}>${locationConfig.regionalMap.map[index].name}</option>`)
+            }
+        }).promise().done(function(){
+            if(!(document.getElementById("citydropvalue").options.length >= 11)){
+                $("#citydropvalue").append(`<option value=add>Add a city...</option>`)
+            }
+        })
+    });
+    if(!inMapBefore){
+        document.getElementById("mapleftvalue")
+            .addEventListener("input", (event) =>{
+                if(!Number(event.target.value)){
+                    document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+                }else{
+                    //console.log(event);
+                    $(".map-regional").css({
+                        left: `${event.target.value}px`
+                    });
+                    locationConfig.regionalMap.leftPos = event.target.value;
+                }
+            })
+        document.getElementById("mapleftvalue")
+            .addEventListener("keypress", (k) =>{
+                //console.log(k)
+                if(k.key == "a"){
+                    locationConfig.regionalMap.leftPos++;
+                    $(".map-regional").css({
+                        left: `${locationConfig.regionalMap.leftPos}px`
+                    });
+                    document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+                }else if(k.key == "A"){
+                    locationConfig.regionalMap.leftPos = locationConfig.regionalMap.leftPos + 10;
+                    $(".map-regional").css({
+                        left: `${locationConfig.regionalMap.leftPos}px`
+                    });
+                    document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+                }else if(k.key == "d"){
+                    locationConfig.regionalMap.leftPos--;
+                    $(".map-regional").css({
+                        left: `${locationConfig.regionalMap.leftPos}px`
+                    });
+                    document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+                }else if(k.key == "D"){
+                    locationConfig.regionalMap.leftPos = locationConfig.regionalMap.leftPos - 10;
+                    $(".map-regional").css({
+                        left: `${locationConfig.regionalMap.leftPos}px`
+                    });
+                    document.getElementById("mapleftvalue").value = locationConfig.regionalMap.leftPos;
+                }
+            })
+        document.getElementById("maptopvalue")
+            .addEventListener("input", (event) =>{
+                if(!Number(event.target.value)){
+                    document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+                }else{
+                    //console.log(event);
+                    $(".map-regional").css({
+                        top: `${event.target.value}px`
+                    });
+                    locationConfig.regionalMap.topPos = event.target.value;
+                }
+            })
+        document.getElementById("maptopvalue")
+            .addEventListener("keypress", (k) =>{
+                //console.log(k)
+                if(k.key == "w"){
+                    locationConfig.regionalMap.topPos++;
+                    $(".map-regional").css({
+                        top: `${locationConfig.regionalMap.topPos}px`
+                    });
+                    document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+                }else if(k.key == "W"){
+                    locationConfig.regionalMap.topPos = locationConfig.regionalMap.topPos + 10;
+                    $(".map-regional").css({
+                        top: `${locationConfig.regionalMap.topPos}px`
+                    });
+                    document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+                }else if(k.key == "s"){
+                    locationConfig.regionalMap.topPos--;
+                    $(".map-regional").css({
+                        top: `${locationConfig.regionalMap.topPos}px`
+                    });
+                    document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+                }else if(k.key == "S"){
+                    locationConfig.regionalMap.topPos = locationConfig.regionalMap.topPos - 10;
+                    $(".map-regional").css({
+                        top: `${locationConfig.regionalMap.topPos}px`
+                    });
+                    document.getElementById("maptopvalue").value = locationConfig.regionalMap.topPos;
+                }
+            })
+        document.getElementById("citydropvalue")
+            .addEventListener('change', (event) =>{
+                if(event.target.value == "N"){
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).removeClass("selected");
+                    $(".city-properties").fadeOut(0);
+                    return;
+                }
+                if(event.target.value == "add"){
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).removeClass("selected");
+                    console.log("City added: no.", locationConfig.regionalMap.map.length);
+                    locationConfig.regionalMap.map.push({
+                        name: "City Name",
+                        lat: 0,
+                        lon: 0,
+                        left: 720,
+                        top: 430
+                    });
+                    $(".map-cities .city.selected").removeClass("selected");
+                    currentMapIdx = locationConfig.regionalMap.map.length-1;
+                    $("#citydropvalue").append(`<option value=${locationConfig.regionalMap.map.length-1}>City Name</option>`)
+                    if(!(document.getElementById("citydropvalue").options.length >= 11)){
+                        $("#citydropvalue").append(`<option value=add>Add a city...</option>`)
+                    }else{
+                        document.querySelector('option[value="add"]').remove();
+                    }
+                    $(".map-cities").append(`<div class="city ${mapDivs[locationConfig.regionalMap.map.length-1]} selected" style="left: 720px; top: 430px;"><div class="city-name">City Name</div><div class="temp">88</div><div class="icon" style="background-image: url(images/icons/2007/large/Ts.apng); background-size: 100% 100%;"></div></div>`)
+                    $(".city-properties").fadeIn(0);
+                    $(".city-properties .city-name").text("City Name:");
+                    document.getElementById("cityleftvalue").value = 720;
+                    document.getElementById("citytopvalue").value = 430;
+                    return;
+                }
+                $(".map-cities .city." + mapDivs[currentMapIdx]).removeClass("selected");
+                $(".city-properties").fadeIn(0);
+                $(".city-properties .city-name").text(locationConfig.regionalMap.map[event.target.value].name + ":");
+                currentMapIdx = event.target.value;
+                document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[event.target.value].left;
+                document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[event.target.value].top;
+                $(".map-cities .city." + mapDivs[currentMapIdx]).addClass("selected");
+            })
+
+        document.getElementById("cityleftvalue")
+            .addEventListener('input', (event) =>{
+                if(!Number(event.target.value)){
+                    document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[currentMapIdx].left;
+                }else{
+                    //console.log(event);
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        left: `${event.target.value}px`
+                    });
+                    locationConfig.regionalMap.map[currentMapIdx].left = event.target.value;
+                }
+            })
+        document.getElementById("cityleftvalue")
+            .addEventListener("keypress", (k) =>{
+                //console.log(k)
+                if(k.key == "d"){
+                    locationConfig.regionalMap.map[currentMapIdx].left++;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        left: `${locationConfig.regionalMap.map[currentMapIdx].left}px`
+                    });
+                    document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[currentMapIdx].left;
+                }else if(k.key == "D"){
+                    locationConfig.regionalMap.map[currentMapIdx].left = locationConfig.regionalMap.map[currentMapIdx].left + 10;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        left: `${locationConfig.regionalMap.map[currentMapIdx].left}px`
+                    });
+                    document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[currentMapIdx].left;
+                }else if(k.key == "a"){
+                    locationConfig.regionalMap.map[currentMapIdx].left--;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        left: `${locationConfig.regionalMap.map[currentMapIdx].left}px`
+                    });
+                    document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[currentMapIdx].left;
+                }else if(k.key == "A"){
+                    locationConfig.regionalMap.map[currentMapIdx].left = locationConfig.regionalMap.map[currentMapIdx].left - 10;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        left: `${locationConfig.regionalMap.map[currentMapIdx].left}px`
+                    });
+                    document.getElementById("cityleftvalue").value = locationConfig.regionalMap.map[currentMapIdx].left;
+                }
+            })
+        
+        document.getElementById("citytopvalue")
+            .addEventListener('input', (event) =>{
+                if(!Number(event.target.value)){
+                    document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[currentMapIdx].top;
+                }else{
+                    //console.log(event);
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        top: `${event.target.value}px`
+                    });
+                    locationConfig.regionalMap.map[currentMapIdx].top = event.target.value;
+                }
+            })
+        document.getElementById("citytopvalue")
+            .addEventListener("keypress", (k) =>{
+                //console.log(k)
+                if(k.key == "s"){
+                    locationConfig.regionalMap.map[currentMapIdx].top++;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        top: `${locationConfig.regionalMap.map[currentMapIdx].top}px`
+                    });
+                    document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[currentMapIdx].top;
+                }else if(k.key == "S"){
+                    locationConfig.regionalMap.map[currentMapIdx].top = locationConfig.regionalMap.map[currentMapIdx].top + 10;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        top: `${locationConfig.regionalMap.map[currentMapIdx].top}px`
+                    });
+                    document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[currentMapIdx].top;
+                }else if(k.key == "w"){
+                    locationConfig.regionalMap.map[currentMapIdx].top--;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        top: `${locationConfig.regionalMap.map[currentMapIdx].top}px`
+                    });
+                    document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[currentMapIdx].top;
+                }else if(k.key == "W"){
+                    locationConfig.regionalMap.map[currentMapIdx].top = locationConfig.regionalMap.map[currentMapIdx].top - 10;
+                    $(".map-cities .city." + mapDivs[currentMapIdx]).css({
+                        top: `${locationConfig.regionalMap.map[currentMapIdx].top}px`
+                    });
+                    document.getElementById("citytopvalue").value = locationConfig.regionalMap.map[currentMapIdx].top;
+                }
+            })
+    }
+}
+function mapSettingsExit(){
+    $("#settings-menu").fadeIn(0);
+    $("#map-interactive-settings").fadeOut(0);
+    $(".map-cities .city." + mapDivs[currentMapIdx]).removeClass("selected");
+    $(".map").fadeOut(0);
+    changeSlide('basic', 'morelocation');
+    $(".map-cities .city").each((index, element) =>{
+        if(locationSettings.mapCities.autoFind == true){
+            // console.log(index, element);
+            var oldLeft = Number($(element).css('left').split("px")[0]), oldTop = Number($(element).css('top').split("px")[0]);
+            // console.log(Number($(element).css('left').split("px")[0]), Number($(element).css('top').split("px")[0]))
+            locationConfig.regionalMap.map[index].left = oldLeft;
+            locationConfig.regionalMap.map[index].top = oldTop;
+        }
+    })
+    inMapBefore = true;
+    locationSettings.mapCities = locationConfig.regionalMap;
+    locationSettings.mapCities.autoFind = false;
+}
+async function removeMapCity(){
+    locationConfig.regionalMap.map.splice(currentMapIdx, 1);
+    $(".map-cities .city." + mapDivs[currentMapIdx]).fadeOut(0);
+    $(".city-properties").fadeOut(0);
+    document.getElementById("citydropvalue").remove(Number(currentMapIdx) + 1)
+    $("#citydropvalue").html("<option value=\"N\"> </option>");
+    $(".map-cities").children(`.${mapDivs[currentMapIdx]}`).remove();
+    for(let i = 0; i < $(".map-cities").children().length; i++){
+        $(".map-cities").children().eq(i).attr("class", "city");
+        $(".map-cities").children().eq(i).addClass(mapDivs[i]);
+        $("#citydropvalue").append(`<option value=${i}>${locationConfig.regionalMap.map[i].name}</option>`)
+    }
+    if(!(document.getElementById("citydropvalue").options.length >= 11)){
+        $("#citydropvalue").append(`<option value=add>Add a city...</option>`)
+    }
+    //last thing
+    await grabMapCityData();
+}
+async function searchMapCity(){
+    $.getJSON("https://api.weather.com/v3/location/search?query=" + document.getElementById("searchcityvalue").value + "&language=en-US&format=json&apiKey=" + api_key, function(data){
+        console.log(data);
+        locationConfig.regionalMap.map[currentMapIdx].name = data.location.displayName[0];
+        locationConfig.regionalMap.map[currentMapIdx].lat = data.location.latitude[0];
+        locationConfig.regionalMap.map[currentMapIdx].lon = data.location.longitude[0];
+        $(".city-properties .city-name").text(data.location.displayName[0] + ":");
+        $(".map-cities .city." + mapDivs[currentMapIdx] + " .city-name").text(data.location.displayName[0]);
+        $("#citydropvalue").html("<option value=\"N\"> </option>");
+        $(".map-cities .city").each((index) =>{
+            $("#citydropvalue").append(`<option value=${index}>${locationConfig.regionalMap.map[index].name}</option>`)
+        }).promise().done(function(){
+            if(!(document.getElementById("citydropvalue").options.length >= 11)){
+                $("#citydropvalue").append(`<option value=add>Add a city...</option>`)
+            }
+        })
+    })
+    await grabMapCityData();
 }

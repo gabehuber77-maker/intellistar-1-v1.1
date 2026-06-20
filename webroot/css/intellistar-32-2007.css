@@ -1027,6 +1027,11 @@
 }
 .map-cities .city {
     position: absolute;
+    width: 272px;
+    height: 216px;
+}
+.map-cities .city.selected {
+    background-color: #6a9eff7f;
 }
 .city .city-name {
     position: absolute;
@@ -1051,4 +1056,31 @@
     height: 158px;
     margin-top: 51px;
     margin-left: 104px;
+}
+
+.reg-cities, .loc-cities {
+    position: absolute;
+    z-index: 5;
+}
+.reg-cities-trans, .loc-cities-trans {
+    position: absolute;
+    z-index: 7;
+}
+.dot, .dot-trans, .dot-outline {
+    height: 35px;
+    width: 35px;
+    position: absolute;
+}
+.radar-city {
+    position: absolute;
+}
+.radar-city .city-name, .radar-city .city-name-trans {
+    font-family: "Interstate Bold";
+    font-size: 40px;
+    position: absolute;
+    color: rgba(212,212,212,1);
+    transform: scaleY(0.91);
+}
+.radar-city .city-name-trans {
+    opacity: 0.7;
 }
