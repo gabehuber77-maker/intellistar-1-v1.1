@@ -427,6 +427,7 @@ function mapSettings(){
             $(".map-cities").css({'left':'','top':''});
             if(locationSettings.mapCities.autoFind == true){
                 $(".map-cities .city").each((index, element) =>{
+                    if(!locationConfig.regionalMap.map[index]){return;}
                     // console.log(index, element);
                     var oldLeft = Number($(element).css('left').split("px")[0]), oldTop = Number($(element).css('top').split("px")[0]);
                     // console.log(Number($(element).css('left').split("px")[0]), Number($(element).css('top').split("px")[0]))
@@ -666,6 +667,7 @@ function mapSettingsExit(){
     $(".map").fadeOut(0);
     changeSlide('basic', 'morelocation');
     $(".map-cities .city").each((index, element) =>{
+        if(!locationConfig.regionalMap.map[index]){return;}
         if(locationSettings.mapCities.autoFind == true){
             // console.log(index, element);
             var oldLeft = Number($(element).css('left').split("px")[0]), oldTop = Number($(element).css('top').split("px")[0]);
