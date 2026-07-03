@@ -6,10 +6,10 @@ var appearanceSettings = {
     marqueeAd: ["network"],
     localWeatherID: "XXXXX", //Keep it at XXXXX to generate a random local weather ID. Otherwise, put a 5 digit number.
     iconSet: "2007", //I highly recommend you do not change this value unless you are more experienced. If you do, the sim will look for a folder after what you set this too.
-    ldlType: 'both', //what you want to see on ldl. 'observations' = only observations / 'both' = both / if anything else is put here, the sim will default to only observations
+    ldlType: 'observations', //what you want to see on ldl. 'observations' = only observations / 'both' = both / if anything else is put here, the sim will default to only observations
     startupTime: 4000, //How long you want to wait for it to start up.
     graphicsPackage: 2008, //the package for graphics. 2007 will have blue text, while 2008 will have black text.
-    version: "1.1"
+    version: "1.1 But With Obs"
 }
 
 var slideSettings = {
