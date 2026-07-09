@@ -40,10 +40,10 @@ function blackLDL(type){
 }
 
 function adCrawl(idx){
-    $(".ldl .observations").fadeOut(0);
-    $(".ldl .weathercomlogo").fadeOut(0);
+    $(".ldl .observations").fadeOut(500);
+    $(".ldl .weathercomlogo").fadeOut(500);
     $('.ldl .crawl').text(appearanceSettings.marqueeAd[idx])
-    $('.ldl .crawl').marquee({ speed: 185, pauseOnHover: false }).on('finished', () =>{
+    $('.ldl .crawl').marquee({ speed: 250, pauseOnHover: false }).on('finished', () =>{
         $('.ldl .crawl').text("");
         $('.ldl .crawl').marquee('destroy');
         obsInterval = blackLDLObs();
@@ -53,28 +53,28 @@ function adCrawl(idx){
 var locWeatherID = appearanceSettings.localWeatherID == "XXXXX" ? Math.floor(Math.random() * 30000) + 10000 : appearanceSettings.localWeatherID;
 var ldlIndex = 0;
 function blackLDLObs(){
-    $(".ldl .template.obs").fadeIn(0);
-    $(".ldl .template.ad").fadeOut(0);
-    $(".ldl .observations").fadeIn(0);
-    $(".ldl .weathercomlogo").fadeIn(0);
+    $(".ldl .template.obs").fadeIn(500);
+    $(".ldl .template.ad").fadeOut(500);
+    $(".ldl .observations").fadeIn(500);
+    $(".ldl .weathercomlogo").fadeIn(500);
     var observations = [
         localWeatherID = function(){
-            $(".ldl .currently").fadeOut(0);
-            $(".ldl .info-header").fadeOut(0);
-            $(".ldl .info").fadeOut(0);
+            $(".ldl .currently").fadeOut(500);
+            $(".ldl .info-header").fadeOut(500);
+            $(".ldl .info").fadeOut(500);
             $(".ldl .city-name").text("Local weather ID: " + locWeatherID);
         },
         cc = function(){
-            $(".ldl .currently").fadeIn(0);
-            $(".ldl .info").fadeIn(0);
+            $(".ldl .currently").fadeIn(500);
+            $(".ldl .info").fadeIn(500);
             $(".ldl .info").text(`${weatherInfo.currentConditions.temp}°`);
             getIcon($(".ldl .icon"), weatherInfo.currentConditions.icon, "ldl", undefined);
-            $(".ldl .icon").fadeIn(0);
+            $(".ldl .icon").fadeIn(500);
             $(".ldl .city-name").text(locationConfig.mainCity.displayname);
         },
         wind = function(){
-            $(".ldl .info-header").fadeIn(0);
-            $(".ldl .icon").fadeOut(0);
+            $(".ldl .info-header").fadeIn(500);
+            $(".ldl .icon").fadeOut(500);
             $(".ldl .info-header").text("WIND:");
             $(".ldl .info").empty();
             $(".ldl .info").append(`<span class="wdc">${weatherInfo.currentConditions.wind.split(" ")[0]}</span> ${weatherInfo.currentConditions.wind.split(" ")[1] == undefined ? "" : weatherInfo.currentConditions.wind.split(" ")[1]}`);
